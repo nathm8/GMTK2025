@@ -19,7 +19,6 @@ class HQTower extends Location {
     
     public function new(p: Object) {
         singleton = this;
-        MessageManager.addListener(this);
         graphics = new Graphics(p);
         position = new Vector2D();
         new Bitmap(hxd.Res.img.tower.toTile().center(), graphics);

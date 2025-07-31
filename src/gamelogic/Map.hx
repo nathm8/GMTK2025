@@ -24,6 +24,7 @@ class Location implements Updateable implements MessageListener {
         targetSelected = new Bitmap(hxd.Res.img.targetselected.toTile().center(), highlight);
         targetSelected.visible = false;
         highlight.visible = false;
+        MessageManager.addListener(this);
     }
 
     public function receiveMessage(msg:Message):Bool {
@@ -40,19 +41,21 @@ class Location implements Updateable implements MessageListener {
         }
         if (Std.isOfType(msg, MouseRelease)) {
             var params = cast(msg, MouseRelease);
+            if (!selected && position.distanceTo(Army.singleton.lastLocation.position) > Army.singleton.rangeLeft)
+                return false;
             if (position.distanceTo(params.worldPosition) < 100) {
                 if (selected) {
                     selected = false;
                     highlight.visible = false;
                     targetSelected.visible = false;
                     highlight.rotation = 0;
-                    MessageManager.sendMessage(new LocationSelected(this));
+                    MessageManager.sendMessage(new LocationDeselected(this));
                 } else {
                     selected = true;
                     highlight.visible = true;
                     highlight.rotation = Math.PI/4;
                     targetSelected.visible = true;
-                    MessageManager.sendMessage(new LocationDeselected(this));
+                    MessageManager.sendMessage(new LocationSelected(this));
                 }
             }
         }

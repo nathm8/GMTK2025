@@ -17,7 +17,6 @@ class Graveyard extends Location {
 	}
     
     public function new(p: Object, pos: Vector2D) {
-        MessageManager.addListener(this);
         graphics = new Graphics(p);
         position = pos;
         graphics.x = pos.x;
