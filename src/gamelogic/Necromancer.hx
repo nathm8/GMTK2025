@@ -77,7 +77,7 @@ class Necromancer implements Updateable implements MessageListener implements De
             var end = Army.singleton.route[1].position;
             var dist = (start - end).magnitude;
             var jumps = Math.ceil(dist/80);
-            var time = dist/80;
+            var time = dist/100;
             trace(dist, time, jumps);
             var delay = 0.0;
             for (i in 0...jumps) {

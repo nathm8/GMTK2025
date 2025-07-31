@@ -88,7 +88,7 @@ class Map implements Updateable implements MessageListener {
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         locations.push(new HQTower(graphics));
-        for (_ in 0...50) {
+        for (_ in 0...20) {
             var unique_location = false;
             var p = new Vector2D();
             while (!unique_location) {
@@ -97,7 +97,7 @@ class Map implements Updateable implements MessageListener {
                 var y = RNGManager.rand.random(2000) - 1000;
                 p = new Vector2D(x, y);
                 for (l in locations) {
-                    if (l.position.distanceTo(p) < 200) {
+                    if (l.position.distanceTo(p) < 300) {
                         unique_location = false;
                         break;
                     }

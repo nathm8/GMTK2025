@@ -1,3 +1,9 @@
 Juice
 -------
 if the mouse is closer to the tower than the random magnitude when idling, have the necromancer go to the mouse instead
+
+UI
+-------
+have glow for mousing over locations, instead of target reticle
+have different glow for locations in range of current planned stop
+show error when unable to go further

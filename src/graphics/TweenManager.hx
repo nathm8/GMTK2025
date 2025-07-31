@@ -184,47 +184,14 @@ class MoveBounceTween extends Tween {
 	}
 }
 
-// class PhysicalMoveBounceTween extends Tween {
-// 	var drawable:DestinationDirectable;
-// 	var x = [0, 1.1, 0.7, 1];
-// 	var y = [0, -0.4, 1.5, 1];
+function easeInOutBack(x: Float): Float {
+	var c1 = 1.70158;
+	var c2 = c1 * 1.525;
 	
-// 	var original:{x:Float, y:Float};
-// 	var target:{x:Float, y:Float};
-
-// 	public function new(d:DestinationDirectable, orig:{x:Float, y:Float},  targ: {x:Float, y:Float}, te:Float, tt:Float, retreat=false) {
-// 		super(te, tt);
-// 		drawable = d;
-// 		original = orig;
-// 		target = targ;
-// 		if (retreat){
-// 			x[0] = 1; x[3] = 0;
-// 			y[0] = 1; y[3] = 0;
-// 		}
-// 	}
-
-// 	override function update(dt:Float) {
-// 		super.update(dt);
-// 		// negative te acts as a delay
-// 		if (timeElapsed < 0)
-// 			return;
-// 		var t = Math.pow(timeElapsed / timeTotal, 5);
-// 		// if (t > 0.5) {
-// 		// 	var tt = timeElapsed / (timeTotal * timeElapsed);
-// 		// 	t = tt > 1 ? 1 : tt;
-// 		// }
-// 		var bx = Math.pow(1 - t, 3) * x[0]
-// 			+ 3 * Math.pow(1 - t, 2) * t * x[1]
-// 			+ 3 * (1 - t) * Math.pow(t, 2) * x[2]
-// 			+ Math.pow(t, 3) * x[3];
-// 		var by = Math.pow(1 - bx, 3) * y[0]
-// 			+ 3 * Math.pow(1 - bx, 2) * bx * y[1]
-// 			+ 3 * (1 - bx) * Math.pow(bx, 2) * y[2]
-// 			+ Math.pow(bx, 3) * y[3];
-// 		drawable.destination.x = ((1 - bx) * original.x + bx*target.x)*PHYSICSCALEINVERT;
-// 		drawable.destination.y = ((1 - by) * original.y + by*target.y)*PHYSICSCALEINVERT;
-// 	}
-// }
+	return x < 0.5
+	  ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+	  : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+	}
 
 class PhysicalMoveBounceTween extends Tween {
 	var drawable:DestinationDirectable;
@@ -245,7 +212,8 @@ class PhysicalMoveBounceTween extends Tween {
 		if (timeElapsed < 0)
 			return;
 		var t = timeElapsed / timeTotal;
-		t = t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+		// t = t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+		t = easeInOutBack(t);
 		drawable.destination.x = ((1 - t) * original.x + t*target.x)*PHYSICSCALEINVERT;
 		drawable.destination.y = ((1 - t) * original.y + t*target.y);
 		drawable.destination.y += Math.pow(20*t - 10, 2) - 100;
