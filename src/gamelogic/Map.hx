@@ -14,33 +14,45 @@ class Location implements Updateable implements MessageListener {
     public var id: Int;
     public var position: Vector2D;
     public var highlight: Graphics;
+    public var targetSelected: Bitmap;
     public var selected = false;
 
     public function new(p: Object) {
         id = maxID++;
         highlight = new Graphics(p);
         new Bitmap(hxd.Res.img.target.toTile().center(), highlight);
+        targetSelected = new Bitmap(hxd.Res.img.targetselected.toTile().center(), highlight);
+        targetSelected.visible = false;
+        highlight.visible = false;
     }
 
     public function receiveMessage(msg:Message):Bool {
-        if (Std.isOfType(msg, MouseMoveMessage)) {
-            var params = cast(msg, MouseMoveMessage);
+        if (Army.singleton == null) return false;
+        if (Army.singleton.state == Marching) return false;
+        if (Std.isOfType(msg, MouseMove)) {
+            var params = cast(msg, MouseMove);
+            if (position.distanceTo(Army.singleton.lastLocation.position) > Army.singleton.rangeLeft)
+                return false;
             if (position.distanceTo(params.worldPosition) < 100)
                 highlight.visible = true || selected;
             else
                 highlight.visible = false || selected;
         }
-        if (Std.isOfType(msg, MouseReleaseMessage)) {
-            var params = cast(msg, MouseReleaseMessage);
+        if (Std.isOfType(msg, MouseRelease)) {
+            var params = cast(msg, MouseRelease);
             if (position.distanceTo(params.worldPosition) < 100) {
                 if (selected) {
                     selected = false;
                     highlight.visible = false;
+                    targetSelected.visible = false;
                     highlight.rotation = 0;
+                    MessageManager.sendMessage(new LocationSelected(this));
                 } else {
                     selected = true;
                     highlight.visible = true;
                     highlight.rotation = Math.PI/4;
+                    targetSelected.visible = true;
+                    MessageManager.sendMessage(new LocationDeselected(this));
                 }
             }
         }

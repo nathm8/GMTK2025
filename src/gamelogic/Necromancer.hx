@@ -58,9 +58,9 @@ class Necromancer implements Updateable implements MessageListener {
     }
 
     public function receiveMessage(msg:Message):Bool {
-        if (Std.isOfType(msg, MouseMoveMessage)) {
+        if (Std.isOfType(msg, MouseMove)) {
             if (state == Idle) {
-                var params = cast(msg, MouseMoveMessage);
+                var params = cast(msg, MouseMove);
                 destination = params.worldPosition.normalize()*(RNGManager.rand.random(50)+50);
                 destination *= PHYSICSCALEINVERT;
             }

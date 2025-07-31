@@ -26,6 +26,7 @@ class GameScene extends Scene implements MessageListener {
 		MessageManager.addListener(this);
 
 		updateables.push(new Map(this));
+		updateables.push(new Army(this));
 		updateables.push(new Necromancer(this));
 	}
 	

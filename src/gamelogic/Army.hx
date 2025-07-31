@@ -19,22 +19,48 @@ class Army implements Updateable implements MessageListener {
     var route = new Array<Location>();
     public var graphics: Graphics;
     public var state: ArmyState;
+    static public var singleton: Army;
+    public var lastLocation(get, null): Location;
+    public var rangeLeft(get, null): Float;
 
     public function new(p: Object) {
+        singleton = this;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         state = Idle;
+        route.push(HQTower.singleton);
     }
 
     public function receiveMessage(msg:Message):Bool {
-        if (Std.isOfType(msg, MouseReleaseMessage)) {
+        if (Std.isOfType(msg, LocationSelected)) {
             if (state != Marching) {
-                var params = cast(msg, MouseReleaseMessage);
-                
+                var params = cast(msg, LocationSelected);
+                route.push(params.location);
             }
         }
         return false;
     }
 
-    public function update(dt:Float) {}
+    public function update(dt:Float) {
+        graphics.clear();
+        if (state != Marching) {
+            graphics.beginFill(0xFF0000, 0.25);
+            graphics.drawCircle(lastLocation.position.x, lastLocation.position.y, rangeLeft);
+            graphics.endFill;
+        }
+    }
+
+    public function get_lastLocation() : Location {
+        return route[route.length-1];
+    }
+
+    function get_rangeLeft():Float {
+        var c = 0.0;
+        var last = route[0];
+        for (l in route) {
+            c += last.position.distanceTo(l.position);
+            last = l;
+        }
+        return range - c;
+    }
 }

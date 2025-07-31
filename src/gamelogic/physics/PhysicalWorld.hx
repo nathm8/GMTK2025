@@ -32,6 +32,6 @@ class PhysicalWorld {
         // trace("PWU: send");
         // debugDraw.clear();
         // gameWorld.drawDebugData();
-        MessageManager.sendMessage(new PhysicsStepDoneMessage());
+        MessageManager.sendMessage(new PhysicsStepDone());
     }
 }
