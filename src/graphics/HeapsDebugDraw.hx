@@ -1,15 +1,12 @@
 package graphics;
 
+import gamelogic.physics.PhysicalWorld.PHYSICSCALE;
 import h2d.Object;
 import h2d.Graphics;
 import box2D.dynamics.B2DebugDraw;
 import box2D.common.math.B2Vec2;
 import box2D.common.math.B2Transform;
 import box2D.common.B2Color;
-
-import utilities.Vector2D;
-
-import haxe.ds.Vector;
 
 class HeapsDebugDraw extends B2DebugDraw {
     
@@ -19,7 +16,7 @@ class HeapsDebugDraw extends B2DebugDraw {
         super();
         graphics = new Graphics(parent);
         setFlags(B2DebugDraw.e_shapeBit);
-        m_drawScale = 1000;
+        m_drawScale = PHYSICSCALE;
     }
 
     override public function clear() {
@@ -79,6 +76,7 @@ class HeapsDebugDraw extends B2DebugDraw {
          */
         override public function drawSolidCircle(center:B2Vec2, radius:Float, axis:B2Vec2, color:B2Color):Void
         {
+            trace(radius);
             #if heaps
             graphics.beginFill(color.color, m_fillAlpha);
             graphics.drawCircle(center.x * m_drawScale, center.y * m_drawScale, radius * m_drawScale, 12);

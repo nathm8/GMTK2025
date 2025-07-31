@@ -6,6 +6,9 @@ import graphics.HeapsDebugDraw;
 import box2D.common.math.B2Vec2;
 import box2D.dynamics.B2World;
 
+var PHYSICSCALE = 1000;
+var PHYSICSCALEINVERT = 1/PHYSICSCALE;
+
 class PhysicalWorld {
     public static var gameWorld = new B2World(new B2Vec2(0, 0), true);
     static var debugDraw: HeapsDebugDraw;
@@ -27,8 +30,8 @@ class PhysicalWorld {
         // trace("PWU: clear");
         gameWorld.clearForces();
         // trace("PWU: send");
-        // debugDraw.clear();
-        // gameWorld.drawDebugData();
+        debugDraw.clear();
+        gameWorld.drawDebugData();
         MessageManager.sendMessage(new PhysicsStepDoneMessage());
     }
 }

@@ -26,7 +26,8 @@ class Main extends hxd.App implements MessageListener {
 		hxd.Window.getInstance().addEventTarget(onEvent);	
 		// gamelogic
 		SoundManager.initialise();
-		mainMenu();
+		newGame();
+		// mainMenu();
 	}
 	
 	override function update(dt:Float) {

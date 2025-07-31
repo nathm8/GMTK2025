@@ -8,10 +8,7 @@ import hxd.Timer;
 import gamelogic.Updateable;
 import gamelogic.physics.PhysicalWorld;
 import graphics.TweenManager;
-import gamelogic.physics.CircularPhysicalGameObject;
 import utilities.MessageManager;
-import utilities.Vector2D;
-import utilities.RNGManager;
 
 class GameScene extends Scene implements MessageListener {
 	var updateables = new Array<Updateable>();
@@ -28,7 +25,8 @@ class GameScene extends Scene implements MessageListener {
 
 		MessageManager.addListener(this);
 
-		new Map(this);
+		updateables.push(new Map(this));
+		updateables.push(new Necromancer(this));
 	}
 	
 	public function update(dt:Float) {

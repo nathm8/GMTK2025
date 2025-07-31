@@ -1,0 +1,79 @@
+package gamelogic;
+
+import utilities.RNGManager;
+import box2D.dynamics.joints.B2MouseJointDef;
+import gamelogic.physics.CircularPhysicalGameObject;
+import box2D.dynamics.joints.B2MouseJoint;
+import gamelogic.physics.PhysicalWorld;
+import box2D.dynamics.B2FixtureDef;
+import box2D.dynamics.B2BodyType;
+import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
+import box2D.dynamics.B2BodyDef;
+import box2D.collision.shapes.B2CircleShape;
+import box2D.dynamics.B2Body;
+import gamelogic.Map.Location;
+import h2d.Graphics;
+import h2d.Object;
+import h2d.Bitmap;
+import utilities.Vector2D;
+import utilities.MessageManager;
+
+enum NecromancerState {
+    Idle;
+}
+
+class Necromancer extends Location {
+ 
+    public var graphics: Graphics;
+    public var state: NecromancerState;
+    public var destination: Vector2D;
+    var body: B2Body;
+    var mouseJoint: B2MouseJoint;
+
+    public function new(p: Object) {
+        MessageManager.addListener(this);
+        graphics = new Graphics(p);
+        position = new Vector2D();
+        destination = position;
+        state = Idle;
+        new Bitmap(hxd.Res.img.necro.toTile().center(), graphics);
+
+        var body_definition = new B2BodyDef();
+        body_definition.type = B2BodyType.DYNAMIC_BODY;
+        var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+        var fixture_definition = new B2FixtureDef();
+        fixture_definition.shape = circle;
+        fixture_definition.userData = this;
+        body = PhysicalWorld.gameWorld.createBody(body_definition);
+        body.createFixture(fixture_definition);
+
+        var mouse_joint_definition = new B2MouseJointDef();
+        mouse_joint_definition.bodyA = new CircularPhysicalGameObject(new Vector2D(), PHYSICSCALEINVERT, 0).body;
+        mouse_joint_definition.bodyB = body;
+        mouse_joint_definition.collideConnected = false;
+        mouse_joint_definition.target = position;
+        mouse_joint_definition.maxForce = 1000;
+        mouse_joint_definition.dampingRatio = 1;
+        mouse_joint_definition.frequencyHz = 1;
+        
+        mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
+    }
+
+    public override function receiveMessage(msg:Message):Bool {
+        if (Std.isOfType(msg, MouseMoveMessage)) {
+            if (state == Idle) {
+                var params = cast(msg, MouseMoveMessage);
+                destination = params.worldPosition.normalize()*(RNGManager.rand.random(50)+50);
+                destination *= PHYSICSCALEINVERT;
+            }
+        }
+        return false;
+    }
+    
+    public override function update(dt: Float) {
+        graphics.x = body.getPosition().x*PHYSICSCALE;
+        graphics.y = body.getPosition().y*PHYSICSCALE;
+        // trace(graphics.x, graphics.y);
+        mouseJoint.setTarget(destination);
+    }
+}

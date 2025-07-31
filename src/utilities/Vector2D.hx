@@ -3,14 +3,10 @@
 **/
 package utilities;
 
+import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
 import box2D.common.math.B2Vec2;
 
 @:dox(show) private typedef Vector2DImpl = {x:Float, y:Float}
-
-// TODO
-// var PHYSICSCALE = 100;
-var PHYSICSCALE = 1;
-var PHYSICSCALEINVERT = 1/PHYSICSCALE;
 
 /**
 	Represents a two dimensional vector.
@@ -368,10 +364,10 @@ var PHYSICSCALEINVERT = 1/PHYSICSCALE;
 	#end
 
 	#if box2d
-	@:from public static inline function fromBox2DPoint(v: B2Vec2):Vector2D return cast new Vector2D(v.x*PHYSICSCALE, v.y*PHYSICSCALE);
+	@:from public static inline function fromBox2DPoint(v: B2Vec2):Vector2D return cast new Vector2D(v.x, v.y);
 
 	/** Cast this Vector2D to Heaps Point class. They unify because both have same component values. **/
-	@:to public inline function toBox2DVec():B2Vec2 return new B2Vec2(this.x*PHYSICSCALEINVERT, this.y*PHYSICSCALEINVERT);
+	@:to public inline function toBox2DVec():B2Vec2 return new B2Vec2(this.x, this.y);
 	#end
 
 	public inline function toString(prefix:String = null):String {
