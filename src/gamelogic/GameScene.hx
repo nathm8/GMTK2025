@@ -27,6 +27,8 @@ class GameScene extends Scene implements MessageListener {
 		camera.anchorY = 0.5;
 
 		MessageManager.addListener(this);
+
+		new Map(this);
 	}
 	
 	public function update(dt:Float) {
@@ -50,20 +52,20 @@ class GameScene extends Scene implements MessageListener {
 	}
 
 	function cameraControl() {
-		// if (Key.isDown(Key.A))
-		// 	camera.move(-10,0);
-		// if (Key.isDown(Key.D))
-		// 	camera.move(10,0);
-		// if (Key.isDown(Key.W))
-		// 	camera.move(0,-10);
-		// if (Key.isDown(Key.S))
-		// 	camera.move(0,10);
-		// if (Key.isDown(Key.E))
-		// 	cameraScale *= 1.1;
-		// if (Key.isDown(Key.Q))
-		// 	cameraScale *= 0.9;
-		// camera.setScale(cameraScale, cameraScale);
-		// fpsText.setScale(1 / cameraScale);
+		if (Key.isDown(Key.A))
+			camera.move(-10,0);
+		if (Key.isDown(Key.D))
+			camera.move(10,0);
+		if (Key.isDown(Key.W))
+			camera.move(0,-10);
+		if (Key.isDown(Key.S))
+			camera.move(0,10);
+		if (Key.isDown(Key.E))
+			cameraScale *= 1.1;
+		if (Key.isDown(Key.Q))
+			cameraScale *= 0.9;
+		camera.setScale(cameraScale, cameraScale);
+		fpsText.setScale(1 / cameraScale);
 	}
 
 }

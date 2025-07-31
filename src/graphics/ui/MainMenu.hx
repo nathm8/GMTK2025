@@ -20,7 +20,7 @@ class MainMenu extends Scene {
 		var titleText = new h2d.Text(hxd.res.DefaultFont.get(), visuals);
 		titleText.x = width / 2;
 		titleText.y = 2 * height / 10;
-		titleText.text = "Dysbarism";
+		titleText.text = "The Travelling Necromancer Problem";
 		titleText.textAlign = Center;
 		titleText.setScale(5);
 
