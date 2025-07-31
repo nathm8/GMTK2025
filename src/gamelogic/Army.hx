@@ -39,6 +39,7 @@ class Army implements Updateable implements MessageListener {
                 if (state == Idle && params.location.id == 0)
                     state = Planning;
                 else if (state == Planning) {
+                    route.push(params.location);
                     MessageManager.sendMessage(new March());
                     state = Marching;
                 }
@@ -53,6 +54,15 @@ class Army implements Updateable implements MessageListener {
                 state = Idle;
         }
         return false;
+    }
+
+    public function progress() {
+        route.remove(route[0]);
+        if (route.length == 1) {
+            state = Idle;
+        } else {
+            MessageManager.sendMessage(new March());
+        }
     }
 
     public function update(dt:Float) {

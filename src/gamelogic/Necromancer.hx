@@ -78,13 +78,21 @@ class Necromancer implements Updateable implements MessageListener implements De
             var dist = (start - end).magnitude;
             var jumps = Math.ceil(dist/80);
             var time = dist/100;
+            trace(start,end);
             trace(dist, time, jumps);
             var delay = 0.0;
             for (i in 0...jumps) {
                 var r:Float = i/jumps;
-                TweenManager.singleton.add(new PhysicalMoveBounceTween(this, start*(1-r)+end*r, start*(1-r+1/jumps)+end*(r+1/jumps), -delay, time/jumps));
+                var rr = (i+1)/jumps;
+                // trace("r", r, rr);
+                // trace("start", start*(1-r)+end*r);
+                // trace("end", start*(1-r+1/jumps)+end*(r+1/jumps));
+                // trace("delay", delay);
+                // trace("timetotal", time/jumps);
+                TweenManager.singleton.add(new PhysicalMoveBounceTween(this, start*(1-r)+end*r, start*(1-rr)+end*(rr), -delay, time/jumps));
                 delay += time/jumps;
             }
+            TweenManager.singleton.add(new DelayedCallTween(Army.singleton.progress, -delay, 1));
         }
         return false;
     }
