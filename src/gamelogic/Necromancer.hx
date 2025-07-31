@@ -1,5 +1,6 @@
 package gamelogic;
 
+import graphics.TweenManager;
 import utilities.RNGManager;
 import box2D.dynamics.joints.B2MouseJointDef;
 import gamelogic.physics.CircularPhysicalGameObject;
@@ -19,15 +20,20 @@ import utilities.MessageManager;
 
 enum NecromancerState {
     Idle;
+    Moving;
 }
 
-class Necromancer implements Updateable implements MessageListener {
+interface DestinationDirectable {
+    public var destination: Vector2D;
+}
+
+class Necromancer implements Updateable implements MessageListener implements DestinationDirectable {
  
     public var graphics: Graphics;
     public var state: NecromancerState;
-    public var destination: Vector2D;
     var body: B2Body;
     var mouseJoint: B2MouseJoint;
+	public var destination:Vector2D;
 
     public function new(p: Object) {
         MessageManager.addListener(this);
@@ -63,6 +69,21 @@ class Necromancer implements Updateable implements MessageListener {
                 var params = cast(msg, MouseMove);
                 destination = params.worldPosition.normalize()*(RNGManager.rand.random(50)+50);
                 destination *= PHYSICSCALEINVERT;
+            }
+        }
+        if (Std.isOfType(msg, March)) {
+            state = Moving;
+            var start = Army.singleton.route[0].position;
+            var end = Army.singleton.route[1].position;
+            var dist = (start - end).magnitude;
+            var jumps = Math.ceil(dist/80);
+            var time = dist/80;
+            trace(dist, time, jumps);
+            var delay = 0.0;
+            for (i in 0...jumps) {
+                var r:Float = i/jumps;
+                TweenManager.singleton.add(new PhysicalMoveBounceTween(this, start*(1-r)+end*r, start*(1-r+1/jumps)+end*(r+1/jumps), -delay, time/jumps));
+                delay += time/jumps;
             }
         }
         return false;

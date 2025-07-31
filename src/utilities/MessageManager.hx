@@ -36,6 +36,8 @@ class LocationSelected extends Message {
 	public var location: Location;
 	public function new(k: Location) {super(); location = k;}
 }
+class March extends Message {
+}
 class LocationDeselected extends Message {
 	public var location: Location;
 	public function new(k: Location) {super(); location = k;}

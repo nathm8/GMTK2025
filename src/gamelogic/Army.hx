@@ -1,7 +1,6 @@
 package gamelogic;
 
 import graphics.Footsteps;
-import h2d.Tile;
 import h2d.Graphics;
 import utilities.MessageManager;
 import h2d.Object;
@@ -18,7 +17,7 @@ enum ArmyState {
 class Army implements Updateable implements MessageListener {
 
     var range = 1500;
-    var route = new Array<Location>();
+    public var route = new Array<Location>();
     public var graphics: Graphics;
     public var state: ArmyState;
     static public var singleton: Army;
@@ -36,11 +35,22 @@ class Army implements Updateable implements MessageListener {
     public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, LocationSelected)) {
             var params = cast(msg, LocationSelected);
-            route.push(params.location);
+            if (params.location.id == 0) {
+                if (state == Idle && params.location.id == 0)
+                    state = Planning;
+                else if (state == Planning) {
+                    MessageManager.sendMessage(new March());
+                    state = Marching;
+                }
+            } else {
+                route.push(params.location);
+            }
         }
         if (Std.isOfType(msg, LocationDeselected)) {
             var params = cast(msg, LocationDeselected);
             route.remove(params.location);
+            if (state == Planning && params.location.id == 0)
+                state = Idle;
         }
         return false;
     }
@@ -48,7 +58,7 @@ class Army implements Updateable implements MessageListener {
     public function update(dt:Float) {
         graphics.clear();
         graphics.removeChildren();
-        if (state != Marching) {
+        if (state == Planning) {
             graphics.beginFill(0xFF0000, 0.1);
             graphics.drawCircle(lastLocation.position.x, lastLocation.position.y, rangeLeft);
             graphics.endFill();

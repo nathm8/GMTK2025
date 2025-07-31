@@ -30,6 +30,7 @@ class Location implements Updateable implements MessageListener {
     public function receiveMessage(msg:Message):Bool {
         if (Army.singleton == null) return false;
         if (Army.singleton.state == Marching) return false;
+        if (Army.singleton.state == Idle && id != 0) return false;
         if (Std.isOfType(msg, MouseMove)) {
             var params = cast(msg, MouseMove);
             if (position.distanceTo(Army.singleton.lastLocation.position) > Army.singleton.rangeLeft)
@@ -55,9 +56,18 @@ class Location implements Updateable implements MessageListener {
                     highlight.visible = true;
                     highlight.rotation = Math.PI/4;
                     targetSelected.visible = true;
+                    if (id == 0 && Army.singleton.state == Idle) {
+                        selected = false;
+                        highlight.visible = false;
+                    }
                     MessageManager.sendMessage(new LocationSelected(this));
                 }
             }
+        }
+        if (Std.isOfType(msg, March)) {
+            selected = false;
+            highlight.visible = false;
+            targetSelected.visible = false;
         }
         return false;
     }
