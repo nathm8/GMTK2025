@@ -1,5 +1,8 @@
 package gamelogic;
 
+import h3d.Vector;
+import h3d.Vector4;
+import h2d.Bitmap;
 import utilities.RNGManager;
 import utilities.Vector2D;
 import h2d.Graphics;
@@ -7,10 +10,41 @@ import h2d.Object;
 import utilities.MessageManager;
 
 class Location implements Updateable implements MessageListener {
+    static var maxID = 0;
+    public var id: Int;
     public var position: Vector2D;
+    public var highlight: Graphics;
+    public var selected = false;
+
+    public function new(p: Object) {
+        id = maxID++;
+        highlight = new Graphics(p);
+        new Bitmap(hxd.Res.img.target.toTile().center(), highlight);
+    }
 
     public function receiveMessage(msg:Message):Bool {
-        throw new haxe.exceptions.NotImplementedException();
+        if (Std.isOfType(msg, MouseMoveMessage)) {
+            var params = cast(msg, MouseMoveMessage);
+            if (position.distanceTo(params.worldPosition) < 100)
+                highlight.visible = true || selected;
+            else
+                highlight.visible = false || selected;
+        }
+        if (Std.isOfType(msg, MouseReleaseMessage)) {
+            var params = cast(msg, MouseReleaseMessage);
+            if (position.distanceTo(params.worldPosition) < 100) {
+                if (selected) {
+                    selected = false;
+                    highlight.visible = false;
+                    highlight.rotation = 0;
+                } else {
+                    selected = true;
+                    highlight.visible = true;
+                    highlight.rotation = Math.PI/4;
+                }
+            }
+        }
+        return false;
     }
 
 	public function update(dt:Float) {}
@@ -38,7 +72,7 @@ class Map implements Updateable implements MessageListener {
                 var y = RNGManager.rand.random(2000) - 1000;
                 p = new Vector2D(x, y);
                 for (l in locations) {
-                    if (l.position.distanceTo(p) < 100) {
+                    if (l.position.distanceTo(p) < 200) {
                         unique_location = false;
                         break;
                     }

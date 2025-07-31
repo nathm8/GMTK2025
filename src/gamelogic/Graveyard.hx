@@ -12,6 +12,7 @@ class Graveyard extends Location {
     public var graphics: Graphics;
 
     public override function receiveMessage(msg:Message):Bool {
+        super.receiveMessage(msg);
 		return false;
 	}
     
@@ -22,6 +23,7 @@ class Graveyard extends Location {
         graphics.x = pos.x;
         graphics.y = pos.y;
         new Bitmap(hxd.Res.img.graveyard.toTile().center(), graphics);
+        super(graphics);
     }
 
     public  override function update(dt: Float) {

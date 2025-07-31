@@ -12,6 +12,7 @@ class HQTower extends Location {
     public var graphics: Graphics;
 
     public override function receiveMessage(msg:Message):Bool {
+        super.receiveMessage(msg);
 		return false;
 	}
     
@@ -20,8 +21,9 @@ class HQTower extends Location {
         graphics = new Graphics(p);
         position = new Vector2D();
         new Bitmap(hxd.Res.img.tower.toTile().center(), graphics);
+        super(graphics);
     }
 
-    public  override function update(dt: Float) {
+    public override function update(dt: Float) {
     }
 }

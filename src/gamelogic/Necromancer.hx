@@ -11,7 +11,6 @@ import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
 import box2D.dynamics.B2BodyDef;
 import box2D.collision.shapes.B2CircleShape;
 import box2D.dynamics.B2Body;
-import gamelogic.Map.Location;
 import h2d.Graphics;
 import h2d.Object;
 import h2d.Bitmap;
@@ -22,7 +21,7 @@ enum NecromancerState {
     Idle;
 }
 
-class Necromancer extends Location {
+class Necromancer implements Updateable implements MessageListener {
  
     public var graphics: Graphics;
     public var state: NecromancerState;
@@ -33,8 +32,7 @@ class Necromancer extends Location {
     public function new(p: Object) {
         MessageManager.addListener(this);
         graphics = new Graphics(p);
-        position = new Vector2D();
-        destination = position;
+        destination = new Vector2D();
         state = Idle;
         new Bitmap(hxd.Res.img.necro.toTile().center(), graphics);
 
@@ -51,7 +49,7 @@ class Necromancer extends Location {
         mouse_joint_definition.bodyA = new CircularPhysicalGameObject(new Vector2D(), PHYSICSCALEINVERT, 0).body;
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
-        mouse_joint_definition.target = position;
+        mouse_joint_definition.target = destination;
         mouse_joint_definition.maxForce = 1000;
         mouse_joint_definition.dampingRatio = 1;
         mouse_joint_definition.frequencyHz = 1;
@@ -59,7 +57,7 @@ class Necromancer extends Location {
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
     }
 
-    public override function receiveMessage(msg:Message):Bool {
+    public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, MouseMoveMessage)) {
             if (state == Idle) {
                 var params = cast(msg, MouseMoveMessage);
@@ -70,10 +68,9 @@ class Necromancer extends Location {
         return false;
     }
     
-    public override function update(dt: Float) {
+    public function update(dt: Float) {
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
-        // trace(graphics.x, graphics.y);
         mouseJoint.setTarget(destination);
     }
 }

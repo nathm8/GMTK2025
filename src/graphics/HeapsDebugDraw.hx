@@ -76,7 +76,6 @@ class HeapsDebugDraw extends B2DebugDraw {
          */
         override public function drawSolidCircle(center:B2Vec2, radius:Float, axis:B2Vec2, color:B2Color):Void
         {
-            trace(radius);
             #if heaps
             graphics.beginFill(color.color, m_fillAlpha);
             graphics.drawCircle(center.x * m_drawScale, center.y * m_drawScale, radius * m_drawScale, 12);
