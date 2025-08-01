@@ -36,7 +36,8 @@ class Map implements Updateable implements MessageListener {
             }
             var d = p.magnitude;
             if (d > 600 && RNGManager.rand.random(2) == 0)
-                locations.push(new Farm(graphics, p));
+                // locations.push(new Farm(graphics, p));
+                locations.push(new Graveyard(graphics, p));
             else
                 locations.push(new Graveyard(graphics, p));
         }

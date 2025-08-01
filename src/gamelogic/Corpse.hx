@@ -53,7 +53,7 @@ class Corpse implements Updateable {
         sprite.rotation = Math.PI/2;
         graphics.alpha = 0;
 
-        TweenManager.singleton.add(new RaiseTween(sprite, 20, 0, 0, 2));
+        // TweenManager.singleton.add(new RaiseTween(sprite, 20, 0, 0, 2));
         TweenManager.singleton.add(new FadeInTween(graphics, 0, 2));
 
         var body_definition = new B2BodyDef();

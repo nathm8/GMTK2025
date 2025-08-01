@@ -67,6 +67,10 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
                 d.y += (RNGManager.rand.rand()-0.5)/12;
                 destination = d;
             }
+        } if (state == FetchingCorpse) {
+            var cp: Vector2D = body.getPosition();
+            cp -= corpse.body.getPosition();
+            destination = corpse.body.getPosition() - cp.normalize()*0.5;
         }
         mouseJoint.setTarget(destination);
     }
