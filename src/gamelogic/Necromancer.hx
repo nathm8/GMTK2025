@@ -27,7 +27,7 @@ interface DestinationDirectable {
     public var destination: Vector2D;
 }
 
-class Necromancer implements Updateable implements MessageListener implements DestinationDirectable {
+class Necromancer implements Updateable implements MessageListener implements DestinationDirectable extends Unit {
  
     public var graphics: Graphics;
     public var state: NecromancerState;
@@ -63,7 +63,8 @@ class Necromancer implements Updateable implements MessageListener implements De
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
     }
 
-    public function receiveMessage(msg:Message):Bool {
+    public override function receiveMessage(msg:Message):Bool {
+        super.receiveMessage(msg);
         if (Std.isOfType(msg, MouseMove)) {
             if (state == Idle) {
                 var params = cast(msg, MouseMove);

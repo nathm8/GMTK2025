@@ -1,7 +1,6 @@
 package gamelogic;
 
 import gamelogic.Necromancer.DestinationDirectable;
-import graphics.TweenManager;
 import utilities.RNGManager;
 import box2D.dynamics.joints.B2MouseJointDef;
 import gamelogic.physics.CircularPhysicalGameObject;
@@ -19,7 +18,7 @@ import h2d.Bitmap;
 import utilities.Vector2D;
 import utilities.MessageManager;
 
-class Zombie implements Updateable implements MessageListener implements DestinationDirectable {
+class Zombie implements Updateable implements MessageListener implements DestinationDirectable extends Unit {
  
     public var graphics: Graphics;
     var body: B2Body;
@@ -62,7 +61,7 @@ class Zombie implements Updateable implements MessageListener implements Destina
         }
     }
 
-    public function receiveMessage(msg:Message):Bool {
+    public override function receiveMessage(msg:Message):Bool {
         return false;
     }
     

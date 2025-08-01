@@ -23,6 +23,8 @@ class Army implements Updateable implements MessageListener {
     static public var singleton: Army;
     public var lastLocation(get, null): Location;
     public var rangeLeft(get, null): Float;
+
+    public var units = new Array<Unit>();
     
     public function new(p: Object) {
         singleton = this;

@@ -1,5 +1,6 @@
 package gamelogic;
 
+import gamelogic.Unit.Corpse;
 import h2d.Scene;
 import h2d.Text;
 import h2d.col.Point;
@@ -29,6 +30,7 @@ class GameScene extends Scene implements MessageListener {
 		updateables.push(new Army(this));
 		var n = new Necromancer(this);
 		updateables.push(n);
+		updateables.push(new Corpse(this, n.body));
 	}
 	
 	public function update(dt:Float) {

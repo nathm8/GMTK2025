@@ -21,7 +21,7 @@ class Main extends hxd.App implements MessageListener {
 		RNGManager.initialise();
 		hxd.Res.initEmbed();
 		// background
-		h3d.Engine.getCurrent().backgroundColor = 0x000000;
+		h3d.Engine.getCurrent().backgroundColor = 0x036100;
 		// controls
 		hxd.Window.getInstance().addEventTarget(onEvent);	
 		// gamelogic

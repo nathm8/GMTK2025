@@ -71,33 +71,6 @@ class ScaleLinearTween extends Tween {
 	}
 }
 
-// class ColourTween extends Tween {
-
-// 	var drawable:Drawable;
-// 	var originalColour: h3d.Vector;
-// 	var targetColour: h3d.Vector;
-
-// 	public function new(d:Drawable, orig_col:h3d.Vector, targ_col:h3d.Vector, te:Float, tt:Float) {
-// 		super(te, tt);
-// 		drawable = d;
-// 		originalColour = orig_col;
-// 		targetColour = targ_col;
-// 	}
-
-// 	override function update(dt:Float) {
-// 		super.update(dt);
-// 		// negative te acts a delay
-// 		if (timeElapsed < 0)
-// 			return;
-// 		var t = timeElapsed / timeTotal;
-// 		var d_col = new h3d.Vector(targetColour.x * t + originalColour.x * (1 - t),
-// 								   targetColour.y * t + originalColour.y * (1 - t),
-// 								   targetColour.z * t + originalColour.z * (1 - t),
-// 								   targetColour.w * t + originalColour.w * (1 - t));
-// 		drawable.color = d_col;
-// 	}
-// }
-
 class RaiseTween extends Tween {
 	var drawable:Drawable;
 	var originalY:Float;
@@ -257,6 +230,21 @@ class FadeOutTween extends Tween {
 		obj.alpha = 1-t;
 		if (t == 1)
 			obj.remove();
+	}
+}
+
+class FadeInTween extends Tween {
+	var obj:Object;
+
+	public function new(o:Object, te:Float, tt:Float) {
+		super(te, tt);
+		obj = o;
+	}
+
+	override function update(dt:Float) {
+		super.update(dt);
+		var t = timeElapsed / timeTotal;
+		obj.alpha = t;
 	}
 }
 
