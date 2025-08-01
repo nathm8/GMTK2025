@@ -27,7 +27,8 @@ class GameScene extends Scene implements MessageListener {
 
 		updateables.push(new Map(this));
 		updateables.push(new Army(this));
-		updateables.push(new Necromancer(this));
+		var n = new Necromancer(this);
+		updateables.push(n);
 	}
 	
 	public function update(dt:Float) {

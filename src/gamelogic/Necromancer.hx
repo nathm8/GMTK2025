@@ -31,7 +31,7 @@ class Necromancer implements Updateable implements MessageListener implements De
  
     public var graphics: Graphics;
     public var state: NecromancerState;
-    var body: B2Body;
+    public var body: B2Body;
     var mouseJoint: B2MouseJoint;
 	public var destination:Vector2D;
 
@@ -56,7 +56,7 @@ class Necromancer implements Updateable implements MessageListener implements De
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 1000;
+        mouse_joint_definition.maxForce = 5000;
         mouse_joint_definition.dampingRatio = 1;
         mouse_joint_definition.frequencyHz = 1;
         
@@ -78,8 +78,8 @@ class Necromancer implements Updateable implements MessageListener implements De
             var dist = (start - end).magnitude;
             var jumps = Math.ceil(dist/80);
             var time = dist/100;
-            trace(start,end);
-            trace(dist, time, jumps);
+            // trace(start,end);
+            // trace(dist, time, jumps);
             var delay = 0.0;
             for (i in 0...jumps) {
                 var r:Float = i/jumps;
