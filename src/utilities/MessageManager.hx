@@ -1,7 +1,7 @@
 package utilities;
 
 import gamelogic.Unit.Corpse;
-import gamelogic.Map.Location;
+import gamelogic.Location;
 import hxd.Event;
 import utilities.Vector2D;
 

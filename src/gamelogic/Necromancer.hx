@@ -77,7 +77,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
             var end = Army.singleton.route[1].position;
             var dist = (start - end).magnitude;
             var jumps = Math.ceil(dist/80);
-            var time = dist/100;
+            var time = dist/125;
             // trace(start,end);
             // trace(dist, time, jumps);
             var delay = 0.0;

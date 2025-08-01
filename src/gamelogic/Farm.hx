@@ -1,7 +1,7 @@
 package gamelogic;
 
 import utilities.RNGManager;
-import gamelogic.Map.Location;
+import gamelogic.Location;
 import h2d.Graphics;
 import h2d.Object;
 import h2d.Bitmap;

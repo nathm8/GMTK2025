@@ -7,7 +7,7 @@ import graphics.Footsteps;
 import h2d.Graphics;
 import utilities.MessageManager;
 import h2d.Object;
-import gamelogic.Map.Location;
+import gamelogic.Location;
 import utilities.MessageManager.Message;
 import utilities.MessageManager.MessageListener;
 
@@ -92,7 +92,6 @@ class Army implements Updateable implements MessageListener {
             }
         } else {
             if (Std.isOfType(route[0], Graveyard)) {
-                // TODO limit number of corpses available at each graveyard
                 var num_corpses = RNGManager.rand.random(2) + 1;
                 for (u in units) {
                     if (u.corpse == null) {
@@ -107,8 +106,13 @@ class Army implements Updateable implements MessageListener {
                         if (num_corpses == 0) break;
                     }
                 }
+                MessageManager.sendMessage(new March());
+            } if (Std.isOfType(route[0], Farm)) {
+                // Battle
+                // Collect Corpses
+                // Continue
+                MessageManager.sendMessage(new March());
             }
-            MessageManager.sendMessage(new March());
         }
     }
 

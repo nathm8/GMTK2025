@@ -1,6 +1,6 @@
 package gamelogic;
 
-import gamelogic.Map.Location;
+import gamelogic.Location;
 import box2D.dynamics.B2Body;
 import gamelogic.Necromancer.DestinationDirectable;
 import utilities.RNGManager;
