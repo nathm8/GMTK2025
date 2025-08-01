@@ -19,7 +19,7 @@ enum ArmyState {
 
 class Army implements Updateable implements MessageListener {
 
-    var range = 1500;
+    var range(get, null) = 1500;
     public var route = new Array<Location>();
     public var graphics: Graphics;
     public var footsteps: Graphics;
@@ -143,5 +143,15 @@ class Army implements Updateable implements MessageListener {
             last = l;
         }
         return range - c;
+    }
+
+    function get_range() {
+        var num_zombs = 0;
+        var num_skellies = 0;
+        for (u in units) {
+            if (Std.isOfType(u, Skeleton)) num_skellies++;
+            if (Std.isOfType(u, Zombie)) num_zombs++;
+        }
+        return 1500 + 100*num_zombs + 200*num_skellies;
     }
 }

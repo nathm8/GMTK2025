@@ -103,10 +103,16 @@ class Map implements Updateable implements MessageListener {
                     }
                 }
             }
-            locations.push(new Graveyard(graphics, p));
+            var d = p.magnitude;
+            if (d > 600 && RNGManager.rand.random(2) == 0)
+                locations.push(new Farm(graphics, p));
+            else
+                locations.push(new Graveyard(graphics, p));
         }
     }
 
     public function update(dt: Float) {
+        for (l in locations)
+            l.update(dt);
     }
 }

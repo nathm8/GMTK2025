@@ -13,8 +13,9 @@ class ContactFilter extends B2ContactFilter {
             if ((id_a % 2 == 0 && id_b % 2 == 0) || (id_a % 1 == 0 && id_b % 1 == 0))
                 return false;
         }
-        // if (Std.isOfType(user_data_a, PlayerSub) && Std.isOfType(user_data_b, Torpedo))
-        //     return false;
+        // CircularPhysicalGameObjects with default userdata do not collide
+        if (Std.isOfType(user_data_a, Int) || Std.isOfType(user_data_b, Int))
+            return false;
         return true;
     }
 }

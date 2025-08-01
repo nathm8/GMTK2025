@@ -19,6 +19,7 @@ import h2d.Graphics;
 enum CorpseType {
     ZombieCorpse;
     SkeletonCorpse;
+    PeasantCorpse;
 }
 
 class Corpse implements Updateable {
@@ -29,16 +30,24 @@ class Corpse implements Updateable {
     var sprite: Bitmap;
     var mask: Bitmap;
     var joint: B2Joint;
+    var resurrectionCount = 0;
     // var distanceJoint: B2DistanceJoint;
 
-    public function new(p: Object, b: B2Body, t: CorpseType) {
+    public function new(p: Object, b: B2Body, t: CorpseType, rez_count=0) {
+        // TODO, size and power increase
+        resurrectionCount = rez_count;
         graphics = new Graphics(p);
         if (t == ZombieCorpse)
             sprite = new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
         else if (t == SkeletonCorpse)
             sprite = new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
+        else if (t == PeasantCorpse)
+            sprite = new Bitmap(hxd.Res.img.peasant.toTile().center(), graphics);
+        if (t == ZombieCorpse || t == SkeletonCorpse)
+            mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
+        else
+            mask = new Bitmap(hxd.Res.img.peasantmask.toTile().center(), sprite);
         type = t;
-        mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
         mask.alpha = 0.75;
         sprite.rotation = Math.PI/2;
         graphics.alpha = 0;
