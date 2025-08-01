@@ -18,11 +18,6 @@ import h2d.Bitmap;
 import utilities.Vector2D;
 import utilities.MessageManager;
 
-enum NecromancerState {
-    Idle;
-    Moving;
-}
-
 interface DestinationDirectable {
     public var destination: Vector2D;
 }
@@ -30,7 +25,6 @@ interface DestinationDirectable {
 class Necromancer extends Unit implements MessageListener implements DestinationDirectable {
  
     public var graphics: Graphics;
-    public var state: NecromancerState;
     var mouseJoint: B2MouseJoint;
 	public var destination:Vector2D;
 

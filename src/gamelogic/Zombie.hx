@@ -72,15 +72,17 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
 
-        totalTime += dt*RNGManager.rand.rand();
-        if (totalTime > 0.05) {
-            totalTime = 0;
-            totalTime = -RNGManager.rand.rand()*0.05;
-            necromancerPositions.unshift(necromancer.body.getPosition());
-            var d = necromancerPositions.pop();
-            d.x += (RNGManager.rand.rand()-0.5)/8;
-            d.y += (RNGManager.rand.rand()-0.5)/8;
-            mouseJoint.setTarget(d);
+        if (state == Idle) {
+            totalTime += dt*RNGManager.rand.rand();
+            if (totalTime > 0.05) {
+                totalTime = 0;
+                totalTime = -RNGManager.rand.rand()*0.05;
+                necromancerPositions.unshift(necromancer.body.getPosition());
+                var d = necromancerPositions.pop();
+                d.x += (RNGManager.rand.rand()-0.5)/8;
+                d.y += (RNGManager.rand.rand()-0.5)/8;
+                mouseJoint.setTarget(d);
+            }
         }
     }
 }

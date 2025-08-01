@@ -108,6 +108,10 @@ class Army implements Updateable implements MessageListener {
     function collectCorpses() {
         for (u in units) {
             if (u.corpse == null) {
+                var c = route[0].corpses.pop();
+                corpses.push(c);
+                u.fetchCorpse(c);
+                u.corpse = c;
             }
         }
     }

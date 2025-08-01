@@ -58,13 +58,15 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
 
-        totalTime += dt*RNGManager.rand.rand();
-        if (totalTime > 0.05) {
-            totalTime = 0;
-            var d = necromancer.body.getPosition();
-            d.x += (RNGManager.rand.rand()-0.5)/12;
-            d.y += (RNGManager.rand.rand()-0.5)/12;
-            mouseJoint.setTarget(d);
+        if (state == Idle) {
+            totalTime += dt*RNGManager.rand.rand();
+            if (totalTime > 0.05) {
+                totalTime = 0;
+                var d = necromancer.body.getPosition();
+                d.x += (RNGManager.rand.rand()-0.5)/12;
+                d.y += (RNGManager.rand.rand()-0.5)/12;
+                mouseJoint.setTarget(d);
+            }
         }
     }
 }
