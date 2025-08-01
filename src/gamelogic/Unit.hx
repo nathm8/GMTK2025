@@ -33,5 +33,8 @@ class Unit implements Updateable implements DestinationDirectable {
     public function fetchCorpse(c: Corpse) {
         state = FetchingCorpse;
         destination = c.body.getPosition();
+        trace("fetch order",this);
+        trace(c.body.getPosition());
+        trace(destination);
     }
 }

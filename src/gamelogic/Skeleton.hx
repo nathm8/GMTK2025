@@ -65,8 +65,9 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
                 var d = necromancer.body.getPosition();
                 d.x += (RNGManager.rand.rand()-0.5)/12;
                 d.y += (RNGManager.rand.rand()-0.5)/12;
-                mouseJoint.setTarget(d);
+                destination = d;
             }
         }
+        mouseJoint.setTarget(destination);
     }
 }

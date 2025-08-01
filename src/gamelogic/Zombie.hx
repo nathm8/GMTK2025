@@ -43,7 +43,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 0.2;
+        mouse_joint_definition.maxForce = 0.3;
         mouse_joint_definition.dampingRatio = 1;
         mouse_joint_definition.frequencyHz = 0.1;
         
@@ -72,8 +72,10 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
                 var d = necromancerPositions.pop();
                 d.x += (RNGManager.rand.rand()-0.5)/8;
                 d.y += (RNGManager.rand.rand()-0.5)/8;
-                mouseJoint.setTarget(d);
+                destination = d;
             }
         }
+        trace(state, destination);
+        mouseJoint.setTarget(destination);
     }
 }
