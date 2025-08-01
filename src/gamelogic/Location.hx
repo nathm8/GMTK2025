@@ -18,8 +18,8 @@ class Location implements Updateable implements MessageListener {
 
     public var corpses = new Array<Corpse>();
 
-    public function new(p: Object) {
-        id = maxID++;
+    public function new(p: Object, i: Int, n: Array<Int>, m: Map) {
+        id = i;
         highlight = new Graphics(p);
         new Bitmap(hxd.Res.img.target.toTile().center(), highlight);
         targetSelected = new Bitmap(hxd.Res.img.targetselected.toTile().center(), highlight);

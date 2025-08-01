@@ -22,6 +22,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
  
     public var graphics: Graphics;
     var mouseJoint: B2MouseJoint;
+    var timeFetching = 0.0;
 
     public function new(p: Object) {
         super();
@@ -90,6 +91,18 @@ class Necromancer extends Unit implements MessageListener implements Destination
         super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
+        if (state == FetchingCorpse) {
+            var cp: Vector2D = body.getPosition();
+            cp -= corpse.body.getPosition();
+            destination = corpse.body.getPosition() - cp.normalize()*0.5;
+            timeFetching += dt;
+            if (timeFetching > 1) {
+                corpse.attachToBody(body);
+                MessageManager.sendMessage(new CorpsePickup());
+                state = Moving;
+            }
+        } else 
+            timeFetching = 0;
         mouseJoint.setTarget(destination);
     }
 }

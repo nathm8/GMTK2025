@@ -16,13 +16,13 @@ class Graveyard extends Location {
 		return false;
 	}
     
-    public function new(p: Object, pos: Vector2D) {
+    public function new(p: Object, pos: Vector2D, i: Int, n: Array<Int>, m: Map) {
         graphics = new Graphics(p);
         position = pos;
         graphics.x = pos.x;
         graphics.y = pos.y;
         new Bitmap(hxd.Res.img.graveyard.toTile().center(), graphics);
-        super(graphics);
+        super(graphics, i, n, m);
     }
 
     public override function update(dt: Float) {

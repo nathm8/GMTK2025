@@ -4,7 +4,6 @@ import graphics.ui.ButtonWithText;
 import h2d.Bitmap;
 import h2d.Object;
 import h2d.Scene;
-import h3d.Vector;
 
 class MainMenu extends Scene {
 	public function new(startGame:() -> Void) {

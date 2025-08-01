@@ -28,7 +28,7 @@ class ContactFilter extends B2ContactFilter {
                 }
                 if (c.joint == null) return false;
             }
-            return false;
+            return true;
         }
         // idk if this is actually necessary but gotta go fast, explore with box2d later
         if (!shouldCorpseCollide(user_data_a, user_data_b) && !shouldCorpseCollide(user_data_b, user_data_a))

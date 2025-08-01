@@ -79,10 +79,12 @@ class Corpse implements Updateable {
 
     public function attachToBody(b: B2Body) {
         detach();
+        var d: Vector2D = b.getPosition();
+        d -= body.getPosition();
         var distance_joint_definition = new B2DistanceJointDef();
         distance_joint_definition.bodyA = b;
         distance_joint_definition.bodyB = body;
-        distance_joint_definition.length = PHYSICSCALEINVERT*25;
+        distance_joint_definition.length = d.magnitude*1.01;
         distance_joint_definition.collideConnected = false;
         joint = PhysicalWorld.gameWorld.createJoint(distance_joint_definition);
     }

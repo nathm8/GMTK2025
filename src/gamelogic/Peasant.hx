@@ -26,6 +26,7 @@ enum EnemyState {
 
 class Peasant implements Updateable implements MessageListener implements DestinationDirectable {
  
+    var _abb = "peasant";
     public var graphics: Graphics;
     var mouseJoint: B2MouseJoint;
 	public var destination:Vector2D;
