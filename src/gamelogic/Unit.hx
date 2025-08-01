@@ -25,15 +25,19 @@ class Corpse implements Updateable {
 
     public var graphics: Graphics;
     public var body: B2Body;
-    public var type = ZombieCorpse;
+    public var type: CorpseType;
     var sprite: Bitmap;
     var mask: Bitmap;
     var joint: B2Joint;
     // var distanceJoint: B2DistanceJoint;
 
-    public function new(p: Object, b: B2Body) {
+    public function new(p: Object, b: B2Body, t: CorpseType) {
         graphics = new Graphics(p);
-        sprite = new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
+        if (t == ZombieCorpse)
+            sprite = new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
+        else if (t == SkeletonCorpse)
+            sprite = new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
+        type = t;
         mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
         mask.alpha = 0.75;
         sprite.rotation = Math.PI/2;

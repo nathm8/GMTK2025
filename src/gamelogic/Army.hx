@@ -1,5 +1,6 @@
 package gamelogic;
 
+import gamelogic.Unit.CorpseType;
 import utilities.RNGManager;
 import gamelogic.Unit.Corpse;
 import graphics.Footsteps;
@@ -71,6 +72,8 @@ class Army implements Updateable implements MessageListener {
             var params = cast(msg, NewUnit);
             if (params.corpse.type == ZombieCorpse)
                 units.push(new Zombie(graphics, necromancer, params.corpse.body));
+            else if (params.corpse.type == SkeletonCorpse)
+                units.push(new Skeleton(graphics, necromancer, params.corpse.body));
         }
         return false;
     }
@@ -93,7 +96,12 @@ class Army implements Updateable implements MessageListener {
                 var num_corpses = RNGManager.rand.random(2) + 1;
                 for (u in units) {
                     if (u.corpse == null) {
-                        u.corpse = new Corpse(graphics, u.body);
+                        var t: CorpseType;
+                        if (RNGManager.rand.random(4) == 0)
+                            t = SkeletonCorpse;
+                        else
+                            t = ZombieCorpse;
+                        u.corpse = new Corpse(graphics, u.body, t);
                         corpses.push(u.corpse);
                         num_corpses--;
                         if (num_corpses == 0) break;
