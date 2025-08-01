@@ -1,7 +1,7 @@
 package graphics;
 
 import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
-import gamelogic.Necromancer.DestinationDirectable;
+import gamelogic.Unit.DestinationDirectable;
 import h2d.Object;
 import hxd.Rand;
 import h2d.Drawable;

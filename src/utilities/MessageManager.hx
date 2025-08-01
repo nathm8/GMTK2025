@@ -39,6 +39,7 @@ class LocationSelected extends Message {
 }
 class March extends Message {}
 class TurnComplete extends Message {}
+class CorpsePickup extends Message {}
 class LocationDeselected extends Message {
 	public var location: Location;
 	public function new(k: Location) {super(); location = k;}

@@ -69,11 +69,10 @@ class Corpse implements Updateable {
 
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
-        trace(body.getPosition());
     }
     
     public function detach() {
-        if (joint == null)
+        if (joint != null)
             PhysicalWorld.gameWorld.destroyJoint(joint);
     }
 

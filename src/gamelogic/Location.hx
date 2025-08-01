@@ -30,7 +30,7 @@ class Location implements Updateable implements MessageListener {
 
     public function receiveMessage(msg:Message):Bool {
         if (Army.singleton == null) return false;
-        if (Army.singleton.state == Marching) return false;
+        if (Army.singleton.state == Marching || Army.singleton.state == AwaitingPickup) return false;
         if (Army.singleton.state == Idle && id != 0) return false;
         if (Std.isOfType(msg, MouseMove)) {
             var params = cast(msg, MouseMove);
@@ -74,9 +74,8 @@ class Location implements Updateable implements MessageListener {
     }
 
     public function generateCorpse(p: Object, pos: Vector2D = null, t: CorpseType = null, rc: Int = 0) {
-        trace("corpse gen");
         if (pos == null)
-            pos = position;// + new Vector2D(RNGManager.rand.random(200)-100, RNGManager.rand.random(200)-100);
+            pos = position + new Vector2D(RNGManager.rand.random(200)-100, RNGManager.rand.random(200)-100);
         // Graveyards spawn skelies sometimes
         if (RNGManager.rand.random(4) == 0)
             t = SkeletonCorpse;

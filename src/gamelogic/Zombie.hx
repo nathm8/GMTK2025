@@ -1,7 +1,7 @@
 package gamelogic;
 
 import box2D.dynamics.B2Body;
-import gamelogic.Necromancer.DestinationDirectable;
+import gamelogic.Unit.DestinationDirectable;
 import utilities.RNGManager;
 import box2D.dynamics.joints.B2MouseJointDef;
 import gamelogic.physics.CircularPhysicalGameObject;
@@ -24,7 +24,6 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     var mouseJoint: B2MouseJoint;
     var necromancer: Necromancer;
     var necromancerPositions = new Array<Vector2D>();
-	public var destination:Vector2D;
     var totalTime = 0.0;
 
     public function new(p: Object, n: Necromancer, b: B2Body) {
@@ -35,15 +34,6 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         necromancer = n;
         new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
 
-        // var body_definition = new B2BodyDef();
-        // body_definition.type = B2BodyType.DYNAMIC_BODY;
-        // var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
-        // var fixture_definition = new B2FixtureDef();
-        // fixture_definition.shape = circle;
-        // fixture_definition.userData = this;
-        // fixture_definition.density = 0.5;
-        // body = PhysicalWorld.gameWorld.createBody(body_definition);
-        // body.createFixture(fixture_definition);
         body = b;
         body.getFixtureList().setDensity(0.5);
         body.getFixtureList().setUserData(this);
@@ -69,6 +59,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     }
     
     public override function update(dt: Float) {
+        super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
 

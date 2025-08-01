@@ -3,6 +3,7 @@ package gamelogic;
 import graphics.TweenManager;
 import utilities.RNGManager;
 import box2D.dynamics.joints.B2MouseJointDef;
+import gamelogic.Unit.DestinationDirectable;
 import gamelogic.physics.CircularPhysicalGameObject;
 import box2D.dynamics.joints.B2MouseJoint;
 import gamelogic.physics.PhysicalWorld;
@@ -11,22 +12,16 @@ import box2D.dynamics.B2BodyType;
 import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
 import box2D.dynamics.B2BodyDef;
 import box2D.collision.shapes.B2CircleShape;
-import box2D.dynamics.B2Body;
 import h2d.Graphics;
 import h2d.Object;
 import h2d.Bitmap;
 import utilities.Vector2D;
 import utilities.MessageManager;
 
-interface DestinationDirectable {
-    public var destination: Vector2D;
-}
-
 class Necromancer extends Unit implements MessageListener implements DestinationDirectable {
  
     public var graphics: Graphics;
     var mouseJoint: B2MouseJoint;
-	public var destination:Vector2D;
 
     public function new(p: Object) {
         super();
@@ -86,12 +81,13 @@ class Necromancer extends Unit implements MessageListener implements Destination
                 TweenManager.singleton.add(new PhysicalMoveBounceTween(this, start*(1-r)+end*r, start*(1-rr)+end*(rr), -delay, time/jumps));
                 delay += time/jumps;
             }
-            TweenManager.singleton.add(new DelayedCallTween(Army.singleton.progress, -delay, 3));
+            TweenManager.singleton.add(new DelayedCallTween(() -> Army.singleton.progress(), -delay, 3));
         }
         return false;
     }
     
     public override function update(dt: Float) {
+        super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
         mouseJoint.setTarget(destination);

@@ -1,7 +1,7 @@
 package gamelogic;
 
 import box2D.dynamics.B2Body;
-import gamelogic.Necromancer.DestinationDirectable;
+import gamelogic.Unit.DestinationDirectable;
 import utilities.RNGManager;
 import box2D.dynamics.joints.B2MouseJointDef;
 import gamelogic.physics.CircularPhysicalGameObject;
@@ -23,7 +23,6 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
     public var graphics: Graphics;
     var mouseJoint: B2MouseJoint;
     var necromancer: Necromancer;
-	public var destination:Vector2D;
     var totalTime = 0.0;
 
     public function new(p: Object, n: Necromancer, b: B2Body) {
@@ -55,6 +54,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
     }
     
     public override function update(dt: Float) {
+        super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
 

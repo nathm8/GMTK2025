@@ -14,6 +14,7 @@ enum ArmyState {
     Idle;
     Planning;
     Marching;
+    AwaitingPickup;
 }
 
 class Army implements Updateable implements MessageListener {
@@ -30,6 +31,8 @@ class Army implements Updateable implements MessageListener {
 
     public var units = new Array<Unit>();
     public var corpses = new Array<Corpse>();
+
+    var pendingCollections = 0;
     
     public function new(p: Object) {
         singleton = this;
@@ -63,6 +66,9 @@ class Army implements Updateable implements MessageListener {
             if (state == Planning && params.location.id == 0)
                 state = Idle;
         }
+        if (Std.isOfType(msg, CorpsePickup)) {
+            pendingCollections--;
+        }
         if (Std.isOfType(msg, CorpseDestroyed)) {
             var params = cast(msg, CorpseDestroyed);
             corpses.remove(params.corpse);
@@ -86,6 +92,7 @@ class Army implements Updateable implements MessageListener {
             for (u in units) {
                 if (u.corpse != null) {
                     u.corpse.resurrect();
+                    corpses.push(u.corpse);
                     u.corpse = null;
                 }
             }
@@ -95,23 +102,26 @@ class Army implements Updateable implements MessageListener {
                 for (_ in 0...RNGManager.rand.random(2) + 1)
                     route[0].generateCorpse(graphics);
                 // Collect Corpses
-                MessageManager.sendMessage(new March());
+                collectCorpses();
+                // Continue
             } if (Std.isOfType(route[0], Farm)) {
                 // Battle
                 // Collect Corpses
                 // Continue
-                MessageManager.sendMessage(new March());
+                // MessageManager.sendMessage(new March());
             }
         }
     }
 
     function collectCorpses() {
+        state = AwaitingPickup;
+        pendingCollections = 0;
         for (u in units) {
-            if (u.corpse == null) {
+            if (u.corpse == null && route[0].corpses.length > 0) {
                 var c = route[0].corpses.pop();
-                corpses.push(c);
                 u.fetchCorpse(c);
                 u.corpse = c;
+                pendingCollections++;
             }
         }
     }
@@ -129,6 +139,11 @@ class Army implements Updateable implements MessageListener {
             for (i in 1...route.length) {
                 new Footsteps(footsteps, prev.position, route[i].position);
                 prev = route[i];
+            }
+        } if (state == AwaitingPickup) {
+            if (pendingCollections == 0) {
+                state = Marching;
+                MessageManager.sendMessage(new March());
             }
         }
         for (u in units) u.update(dt);
@@ -156,6 +171,6 @@ class Army implements Updateable implements MessageListener {
             if (Std.isOfType(u, Skeleton)) num_skellies++;
             if (Std.isOfType(u, Zombie)) num_zombs++;
         }
-        return 1500 + 100*num_zombs + 200*num_skellies;
+        return 1000 + 100*num_zombs + 200*num_skellies;
     }
 }

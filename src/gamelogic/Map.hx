@@ -1,7 +1,5 @@
 package gamelogic;
 
-import gamelogic.Corpse;
-import h2d.Bitmap;
 import utilities.RNGManager;
 import utilities.Vector2D;
 import h2d.Graphics;

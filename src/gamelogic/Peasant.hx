@@ -2,7 +2,7 @@ package gamelogic;
 
 import gamelogic.Location;
 import box2D.dynamics.B2Body;
-import gamelogic.Necromancer.DestinationDirectable;
+import gamelogic.Unit.DestinationDirectable;
 import utilities.RNGManager;
 import box2D.dynamics.joints.B2MouseJointDef;
 import gamelogic.physics.CircularPhysicalGameObject;
