@@ -59,6 +59,7 @@ class Corpse implements Updateable {
         var body_definition = new B2BodyDef();
         body_definition.type = B2BodyType.DYNAMIC_BODY;
         body_definition.position = pos*PHYSICSCALEINVERT;
+        body_definition.linearDamping = 0.25;
         var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
         var fixture_definition = new B2FixtureDef();
         fixture_definition.shape = circle;

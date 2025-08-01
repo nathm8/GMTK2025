@@ -7,11 +7,7 @@ import box2D.dynamics.joints.B2MouseJointDef;
 import gamelogic.physics.CircularPhysicalGameObject;
 import box2D.dynamics.joints.B2MouseJoint;
 import gamelogic.physics.PhysicalWorld;
-import box2D.dynamics.B2FixtureDef;
-import box2D.dynamics.B2BodyType;
 import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
-import box2D.dynamics.B2BodyDef;
-import box2D.collision.shapes.B2CircleShape;
 import h2d.Graphics;
 import h2d.Object;
 import h2d.Bitmap;
@@ -24,6 +20,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
     var mouseJoint: B2MouseJoint;
     var necromancer: Necromancer;
     var totalTime = 0.0;
+    var timeFetching = 0.0;
 
     public function new(p: Object, n: Necromancer, b: B2Body) {
         super();
@@ -71,7 +68,14 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
             var cp: Vector2D = body.getPosition();
             cp -= corpse.body.getPosition();
             destination = corpse.body.getPosition() - cp.normalize()*0.5;
-        }
+            timeFetching += dt;
+            if (timeFetching > 1) {
+                corpse.attachToBody(body);
+                MessageManager.sendMessage(new CorpsePickup());
+                state = Idle;
+            }
+        } else 
+            timeFetching = 0;
         mouseJoint.setTarget(destination);
     }
 }
