@@ -93,6 +93,28 @@ class RaiseTween extends Tween {
 	}
 }
 
+class RotateTween extends Tween {
+	var drawable:Drawable;
+	var originalY:Float;
+	var targetY:Float;
+
+	public function new(d:Drawable, orig:Float, targ:Float, te:Float, tt:Float) {
+		super(te, tt);
+		drawable = d;
+		originalY = orig;
+		targetY = targ;
+	}
+
+	override function update(dt:Float) {
+		super.update(dt);
+		// negative te acts a delay
+		if (timeElapsed < 0)
+			return;
+		var t = easeInOutBack(timeElapsed/timeTotal);
+		drawable.rotation = t*targetY + (1-t)*originalY;
+	}
+}
+
 class RaiseSmoothTween extends Tween {
 	var drawable:Drawable;
 	var originalY:Float;

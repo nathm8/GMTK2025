@@ -1,5 +1,6 @@
 package utilities;
 
+import gamelogic.Unit.Corpse;
 import gamelogic.Map.Location;
 import hxd.Event;
 import utilities.Vector2D;
@@ -41,6 +42,14 @@ class March extends Message {
 class LocationDeselected extends Message {
 	public var location: Location;
 	public function new(k: Location) {super(); location = k;}
+}
+class CorpseDestroyed extends Message {
+	public var corpse: Corpse;
+	public function new(k: Corpse) {super(); corpse = k;}
+}
+class NewUnit extends Message {
+	public var corpse: Corpse;
+	public function new(k: Corpse) {super(); corpse = k;}
 }
 
 interface MessageListener {

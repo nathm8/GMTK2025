@@ -11,17 +11,15 @@ import box2D.dynamics.B2BodyType;
 import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
 import box2D.dynamics.B2BodyDef;
 import box2D.collision.shapes.B2CircleShape;
-import box2D.dynamics.B2Body;
 import h2d.Graphics;
 import h2d.Object;
 import h2d.Bitmap;
 import utilities.Vector2D;
 import utilities.MessageManager;
 
-class Zombie implements Updateable implements MessageListener implements DestinationDirectable extends Unit {
+class Zombie extends Unit implements MessageListener implements DestinationDirectable {
  
     public var graphics: Graphics;
-    var body: B2Body;
     var mouseJoint: B2MouseJoint;
     var necromancer: Necromancer;
     var necromancerPositions = new Array<Vector2D>();
@@ -51,21 +49,21 @@ class Zombie implements Updateable implements MessageListener implements Destina
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
         mouse_joint_definition.maxForce = 0.1;
-        mouse_joint_definition.dampingRatio = 0.5;
-        mouse_joint_definition.frequencyHz = 0.5;
+        mouse_joint_definition.dampingRatio = 1;
+        mouse_joint_definition.frequencyHz = 0.1;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
 
-        for (_ in 0...10) {
+        for (_ in 0...1) {
             necromancerPositions.unshift(necromancer.body.getPosition());
         }
     }
 
-    public override function receiveMessage(msg:Message):Bool {
+    public function receiveMessage(msg:Message):Bool {
         return false;
     }
     
-    public function update(dt: Float) {
+    public override function update(dt: Float) {
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
 
@@ -75,8 +73,8 @@ class Zombie implements Updateable implements MessageListener implements Destina
             totalTime = -RNGManager.rand.rand()*0.1;
             necromancerPositions.unshift(necromancer.body.getPosition());
             var d = necromancerPositions.pop();
-            d.x += (RNGManager.rand.rand()-0.5)/4;
-            d.y += (RNGManager.rand.rand()-0.5)/4;
+            d.x += (RNGManager.rand.rand()-0.5)/8;
+            d.y += (RNGManager.rand.rand()-0.5)/8;
             mouseJoint.setTarget(d);
         }
     }

@@ -1,5 +1,6 @@
 package gamelogic;
 
+import gamelogic.Unit.Corpse;
 import graphics.Footsteps;
 import h2d.Graphics;
 import utilities.MessageManager;
@@ -19,19 +20,25 @@ class Army implements Updateable implements MessageListener {
     var range = 1500;
     public var route = new Array<Location>();
     public var graphics: Graphics;
+    public var footsteps: Graphics;
     public var state: ArmyState;
     static public var singleton: Army;
     public var lastLocation(get, null): Location;
     public var rangeLeft(get, null): Float;
+    var necromancer: Necromancer;
 
     public var units = new Array<Unit>();
+    public var corpses = new Array<Corpse>();
     
     public function new(p: Object) {
         singleton = this;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
+        footsteps = new Graphics(graphics);
         state = Idle;
         route.push(HQTower.singleton);
+        necromancer = new Necromancer(graphics);
+        units.push(necromancer);
     }
 
     public function receiveMessage(msg:Message):Bool {
@@ -55,21 +62,48 @@ class Army implements Updateable implements MessageListener {
             if (state == Planning && params.location.id == 0)
                 state = Idle;
         }
+        if (Std.isOfType(msg, CorpseDestroyed)) {
+            var params = cast(msg, CorpseDestroyed);
+            corpses.remove(params.corpse);
+        }
+        if (Std.isOfType(msg, NewUnit)) {
+            var params = cast(msg, NewUnit);
+            if (params.corpse.type == ZombieCorpse)
+                units.push(new Zombie(graphics, necromancer));
+        }
         return false;
     }
 
     public function progress() {
         route.remove(route[0]);
         if (route.length == 1) {
+            // assume it must be the tower
             state = Idle;
+            necromancer.state = Idle;
+            for (u in units) {
+                if (u.corpse != null) {
+                    u.corpse.resurrect();
+                    u.corpse = null;
+                }
+            }
         } else {
+            if (Std.isOfType(route[0], Graveyard)) {
+                // TODO limit number of corpses available at each graveyard
+                for (u in units) {
+                    if (u.corpse == null) {
+                        u.corpse = new Corpse(graphics, u.body);
+                        corpses.push(u.corpse);
+                    }
+                }
+            }
             MessageManager.sendMessage(new March());
         }
     }
 
     public function update(dt:Float) {
         graphics.clear();
-        graphics.removeChildren();
+        footsteps.remove();
+        footsteps = new Graphics(graphics);
         if (state == Planning) {
             graphics.beginFill(0xFF0000, 0.1);
             graphics.drawCircle(lastLocation.position.x, lastLocation.position.y, rangeLeft);
@@ -77,10 +111,12 @@ class Army implements Updateable implements MessageListener {
 
             var prev = route[0];
             for (i in 1...route.length) {
-                new Footsteps(graphics, prev.position, route[i].position);
+                new Footsteps(footsteps, prev.position, route[i].position);
                 prev = route[i];
             }
         }
+        for (u in units) u.update(dt);
+        for (c in corpses) c.update(dt);
     }
 
     public function get_lastLocation() : Location {

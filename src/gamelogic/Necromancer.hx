@@ -27,11 +27,10 @@ interface DestinationDirectable {
     public var destination: Vector2D;
 }
 
-class Necromancer implements Updateable implements MessageListener implements DestinationDirectable extends Unit {
+class Necromancer extends Unit implements MessageListener implements DestinationDirectable {
  
     public var graphics: Graphics;
     public var state: NecromancerState;
-    public var body: B2Body;
     var mouseJoint: B2MouseJoint;
 	public var destination:Vector2D;
 
@@ -44,7 +43,7 @@ class Necromancer implements Updateable implements MessageListener implements De
 
         var body_definition = new B2BodyDef();
         body_definition.type = B2BodyType.DYNAMIC_BODY;
-        var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+        var circle = new B2CircleShape(20*PHYSICSCALEINVERT);
         var fixture_definition = new B2FixtureDef();
         fixture_definition.shape = circle;
         fixture_definition.userData = this;
@@ -63,8 +62,7 @@ class Necromancer implements Updateable implements MessageListener implements De
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
     }
 
-    public override function receiveMessage(msg:Message):Bool {
-        super.receiveMessage(msg);
+    public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, MouseMove)) {
             if (state == Idle) {
                 var params = cast(msg, MouseMove);
@@ -93,12 +91,12 @@ class Necromancer implements Updateable implements MessageListener implements De
                 TweenManager.singleton.add(new PhysicalMoveBounceTween(this, start*(1-r)+end*r, start*(1-rr)+end*(rr), -delay, time/jumps));
                 delay += time/jumps;
             }
-            TweenManager.singleton.add(new DelayedCallTween(Army.singleton.progress, -delay, 1));
+            TweenManager.singleton.add(new DelayedCallTween(Army.singleton.progress, -delay, 3));
         }
         return false;
     }
     
-    public function update(dt: Float) {
+    public override function update(dt: Float) {
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
         mouseJoint.setTarget(destination);
