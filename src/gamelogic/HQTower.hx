@@ -27,5 +27,6 @@ class HQTower extends Location {
     }
 
     public override function update(dt: Float) {
+        super.update(dt);
     }
 }

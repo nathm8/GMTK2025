@@ -1,6 +1,5 @@
 package gamelogic;
 
-import gamelogic.Unit.Corpse;
 import h2d.Scene;
 import h2d.Text;
 import h2d.col.Point;

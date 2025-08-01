@@ -1,8 +1,7 @@
 package gamelogic;
 
-import gamelogic.Unit.CorpseType;
 import utilities.RNGManager;
-import gamelogic.Unit.Corpse;
+import gamelogic.Corpse;
 import graphics.Footsteps;
 import h2d.Graphics;
 import utilities.MessageManager;
@@ -93,26 +92,22 @@ class Army implements Updateable implements MessageListener {
             MessageManager.sendMessage(new TurnComplete());
         } else {
             if (Std.isOfType(route[0], Graveyard)) {
-                var num_corpses = RNGManager.rand.random(2) + 1;
-                for (u in units) {
-                    if (u.corpse == null) {
-                        var t: CorpseType;
-                        if (RNGManager.rand.random(4) == 0)
-                            t = SkeletonCorpse;
-                        else
-                            t = ZombieCorpse;
-                        u.corpse = new Corpse(graphics, u.body, t);
-                        corpses.push(u.corpse);
-                        num_corpses--;
-                        if (num_corpses == 0) break;
-                    }
-                }
+                for (_ in 0...RNGManager.rand.random(2) + 1)
+                    route[0].generateCorpse(graphics);
+                // Collect Corpses
                 MessageManager.sendMessage(new March());
             } if (Std.isOfType(route[0], Farm)) {
                 // Battle
                 // Collect Corpses
                 // Continue
                 MessageManager.sendMessage(new March());
+            }
+        }
+    }
+
+    function collectCorpses() {
+        for (u in units) {
+            if (u.corpse == null) {
             }
         }
     }

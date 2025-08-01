@@ -16,6 +16,17 @@ class ContactFilter extends B2ContactFilter {
         // CircularPhysicalGameObjects with default userdata do not collide
         if (Std.isOfType(user_data_a, Int) || Std.isOfType(user_data_b, Int))
             return false;
+        // unattached corpses should not collide
+        if (Std.isOfType(user_data_a, Corpse)) {
+            var c = cast(user_data_a, Corpse);
+            if (c.joint == null)
+                return false;
+        }
+        if (Std.isOfType(user_data_b, Corpse)) {
+            var c = cast(user_data_b, Corpse);
+            if (c.joint == null)
+                return false;
+        }
         return true;
     }
 }

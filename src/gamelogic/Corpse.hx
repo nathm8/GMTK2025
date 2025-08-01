@@ -1,5 +1,6 @@
 package gamelogic;
 
+import utilities.Vector2D;
 import box2D.dynamics.joints.B2Joint;
 import utilities.MessageManager;
 import graphics.TweenManager;
@@ -29,11 +30,11 @@ class Corpse implements Updateable {
     public var type: CorpseType;
     var sprite: Bitmap;
     var mask: Bitmap;
-    var joint: B2Joint;
+    public var joint: B2Joint;
     var resurrectionCount = 0;
     // var distanceJoint: B2DistanceJoint;
 
-    public function new(p: Object, b: B2Body, t: CorpseType, rez_count=0) {
+    public function new(p: Object, pos: Vector2D, t: CorpseType, rez_count=0) {
         // TODO, size and power increase
         resurrectionCount = rez_count;
         graphics = new Graphics(p);
@@ -55,14 +56,9 @@ class Corpse implements Updateable {
         TweenManager.singleton.add(new RaiseTween(sprite, 20, 0, 0, 2));
         TweenManager.singleton.add(new FadeInTween(graphics, 0, 2));
 
-        graphics.x = b.getPosition().x*PHYSICSCALE;
-        graphics.y = b.getPosition().y*PHYSICSCALE;
-        graphics.y += 15;
-
         var body_definition = new B2BodyDef();
         body_definition.type = B2BodyType.DYNAMIC_BODY;
-        body_definition.position = b.getPosition();
-        body_definition.position.y += 15*PHYSICSCALEINVERT;
+        body_definition.position = pos*PHYSICSCALEINVERT;
         var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
         var fixture_definition = new B2FixtureDef();
         fixture_definition.shape = circle;
@@ -71,6 +67,18 @@ class Corpse implements Updateable {
         body = PhysicalWorld.gameWorld.createBody(body_definition);
         body.createFixture(fixture_definition);
 
+        graphics.x = body.getPosition().x*PHYSICSCALE;
+        graphics.y = body.getPosition().y*PHYSICSCALE;
+        trace(body.getPosition());
+    }
+    
+    public function detach() {
+        if (joint == null)
+            PhysicalWorld.gameWorld.destroyJoint(joint);
+    }
+
+    public function attachToBody(b: B2Body) {
+        detach();
         var distance_joint_definition = new B2DistanceJointDef();
         distance_joint_definition.bodyA = b;
         distance_joint_definition.bodyB = body;
@@ -94,7 +102,7 @@ class Corpse implements Updateable {
 
     function destroy() {
         MessageManager.sendMessage(new CorpseDestroyed(this));
-        PhysicalWorld.gameWorld.destroyJoint(joint);
+        detach();
         graphics.remove();
     }
 }

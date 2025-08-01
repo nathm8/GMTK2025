@@ -31,6 +31,7 @@ class Farm extends Location {
     }
 
     public override function update(dt: Float) {
+        super.update(dt);
         for (p in peasants) p.update(dt);
     }
 

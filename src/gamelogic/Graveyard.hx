@@ -25,6 +25,7 @@ class Graveyard extends Location {
         super(graphics);
     }
 
-    public  override function update(dt: Float) {
+    public override function update(dt: Float) {
+        super.update(dt);
     }
 }
