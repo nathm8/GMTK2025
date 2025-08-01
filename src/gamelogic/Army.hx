@@ -90,6 +90,7 @@ class Army implements Updateable implements MessageListener {
                     u.corpse = null;
                 }
             }
+            MessageManager.sendMessage(new TurnComplete());
         } else {
             if (Std.isOfType(route[0], Graveyard)) {
                 var num_corpses = RNGManager.rand.random(2) + 1;

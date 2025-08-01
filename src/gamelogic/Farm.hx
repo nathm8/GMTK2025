@@ -13,11 +13,6 @@ class Farm extends Location {
     public var graphics: Graphics;
     var peasants = new Array<Peasant>();
 
-    public override function receiveMessage(msg:Message):Bool {
-        super.receiveMessage(msg);
-		return false;
-	}
-    
     public function new(p: Object, pos: Vector2D) {
         graphics = new Graphics(p);
         position = pos;
@@ -26,12 +21,25 @@ class Farm extends Location {
         new Bitmap(hxd.Res.img.farm.toTile().center(), graphics);
         super(graphics);
 
-        for (_ in 0...RNGManager.rand.random(5)+1) {
-            peasants.push(new Peasant(graphics.parent, this));
+        for (_ in 0...RNGManager.rand.random(3)+1) {
+            spawnPeasant();
         }
     }
 
-    public  override function update(dt: Float) {
+    function spawnPeasant() {
+        peasants.push(new Peasant(graphics.parent, this));
+    }
+
+    public override function update(dt: Float) {
         for (p in peasants) p.update(dt);
     }
+
+    public override function receiveMessage(msg:Message):Bool {
+        if (Std.isOfType(msg, TurnComplete)) {
+            if (peasants.length < 10)
+                spawnPeasant();
+        }
+        return super.receiveMessage(msg);
+    }
+
 }
