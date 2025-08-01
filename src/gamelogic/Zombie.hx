@@ -1,5 +1,6 @@
 package gamelogic;
 
+import box2D.dynamics.B2Body;
 import gamelogic.Necromancer.DestinationDirectable;
 import utilities.RNGManager;
 import box2D.dynamics.joints.B2MouseJointDef;
@@ -26,29 +27,33 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
 	public var destination:Vector2D;
     var totalTime = 0.0;
 
-    public function new(p: Object, n: Necromancer) {
+    public function new(p: Object, n: Necromancer, b: B2Body) {
+        super();
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         destination = new Vector2D();
         necromancer = n;
         new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
 
-        var body_definition = new B2BodyDef();
-        body_definition.type = B2BodyType.DYNAMIC_BODY;
-        var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
-        var fixture_definition = new B2FixtureDef();
-        fixture_definition.shape = circle;
-        fixture_definition.userData = this;
-        fixture_definition.density = 0.5;
-        body = PhysicalWorld.gameWorld.createBody(body_definition);
-        body.createFixture(fixture_definition);
+        // var body_definition = new B2BodyDef();
+        // body_definition.type = B2BodyType.DYNAMIC_BODY;
+        // var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+        // var fixture_definition = new B2FixtureDef();
+        // fixture_definition.shape = circle;
+        // fixture_definition.userData = this;
+        // fixture_definition.density = 0.5;
+        // body = PhysicalWorld.gameWorld.createBody(body_definition);
+        // body.createFixture(fixture_definition);
+        body = b;
+        body.getFixtureList().setDensity(0.5);
+        body.getFixtureList().setUserData(this);
 
         var mouse_joint_definition = new B2MouseJointDef();
         mouse_joint_definition.bodyA = new CircularPhysicalGameObject(new Vector2D(), PHYSICSCALEINVERT, 0).body;
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 0.1;
+        mouse_joint_definition.maxForce = 0.2;
         mouse_joint_definition.dampingRatio = 1;
         mouse_joint_definition.frequencyHz = 0.1;
         
@@ -70,7 +75,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         totalTime += dt*RNGManager.rand.rand();
         if (totalTime > 0.05) {
             totalTime = 0;
-            totalTime = -RNGManager.rand.rand()*0.1;
+            totalTime = -RNGManager.rand.rand()*0.05;
             necromancerPositions.unshift(necromancer.body.getPosition());
             var d = necromancerPositions.pop();
             d.x += (RNGManager.rand.rand()-0.5)/8;

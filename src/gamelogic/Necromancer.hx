@@ -35,6 +35,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
 	public var destination:Vector2D;
 
     public function new(p: Object) {
+        super();
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         destination = new Vector2D();

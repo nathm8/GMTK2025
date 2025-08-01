@@ -1,5 +1,6 @@
 package gamelogic;
 
+import box2D.dynamics.joints.B2Joint;
 import utilities.MessageManager;
 import graphics.TweenManager;
 import box2D.dynamics.joints.B2DistanceJointDef;
@@ -27,6 +28,7 @@ class Corpse implements Updateable {
     public var type = ZombieCorpse;
     var sprite: Bitmap;
     var mask: Bitmap;
+    var joint: B2Joint;
     // var distanceJoint: B2DistanceJoint;
 
     public function new(p: Object, b: B2Body) {
@@ -60,8 +62,8 @@ class Corpse implements Updateable {
         distance_joint_definition.bodyA = b;
         distance_joint_definition.bodyB = body;
         distance_joint_definition.length = PHYSICSCALEINVERT*21;
-        distance_joint_definition.collideConnected = true;
-        PhysicalWorld.gameWorld.createJoint(distance_joint_definition);
+        distance_joint_definition.collideConnected = false;
+        joint = PhysicalWorld.gameWorld.createJoint(distance_joint_definition);
     }
 
     public function update(dt:Float) {
@@ -79,7 +81,7 @@ class Corpse implements Updateable {
 
     function destroy() {
         MessageManager.sendMessage(new CorpseDestroyed(this));
-        PhysicalWorld.gameWorld.destroyBody(body);
+        PhysicalWorld.gameWorld.destroyJoint(joint);
         graphics.remove();
     }
 }
@@ -87,6 +89,12 @@ class Corpse implements Updateable {
 class Unit implements Updateable {
     public var corpse: Corpse;
     public var body: B2Body;
+    public var id: Int;
+    static var maxID = 0;
+
+    public function new() {
+        id = maxID++;    
+    }
 
     public function update(dt:Float) {}
 }

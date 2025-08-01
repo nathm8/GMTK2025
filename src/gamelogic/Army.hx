@@ -1,5 +1,6 @@
 package gamelogic;
 
+import utilities.RNGManager;
 import gamelogic.Unit.Corpse;
 import graphics.Footsteps;
 import h2d.Graphics;
@@ -69,7 +70,7 @@ class Army implements Updateable implements MessageListener {
         if (Std.isOfType(msg, NewUnit)) {
             var params = cast(msg, NewUnit);
             if (params.corpse.type == ZombieCorpse)
-                units.push(new Zombie(graphics, necromancer));
+                units.push(new Zombie(graphics, necromancer, params.corpse.body));
         }
         return false;
     }
@@ -89,10 +90,13 @@ class Army implements Updateable implements MessageListener {
         } else {
             if (Std.isOfType(route[0], Graveyard)) {
                 // TODO limit number of corpses available at each graveyard
+                var num_corpses = RNGManager.rand.random(2) + 1;
                 for (u in units) {
                     if (u.corpse == null) {
                         u.corpse = new Corpse(graphics, u.body);
                         corpses.push(u.corpse);
+                        num_corpses--;
+                        if (num_corpses == 0) break;
                     }
                 }
             }
