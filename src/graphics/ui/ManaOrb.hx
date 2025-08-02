@@ -1,5 +1,6 @@
 package graphics.ui;
 
+import h2d.Layers;
 import graphics.TweenManager.MoveBounceTween;
 import gamelogic.Army;
 import h2d.Graphics;
@@ -13,15 +14,13 @@ import h2d.Object;
 
 class ManaOrb extends Object implements Updateable implements MessageListener {
 
-	var camera: Camera;
 	var mana: Bitmap;
 	var orb: Bitmap;
 	var measures: Graphics;
 	var measurePercentages = new Array<Float>();
 
-	public function new(p :Object, c: Camera) {
-		super(p);
-		camera = c;
+	public function new() {
+		super();
 		orb = new Bitmap(hxd.Res.img.orb.toTile().center(), this);
 		var mask_area = new Bitmap(hxd.Res.img.orbmask.toTile().center(), orb);
 		mana = new Bitmap(hxd.Res.img.mana.toTile().center(), orb);
@@ -36,16 +35,14 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 		var mask = new h2d.filter.Mask(mask_area);
 		mana.filter = mask;
 		measures.filter = mask;
+		x = 128+64;
+		y = 1080-256+128;
 
 		calcMeasurements();
 		MessageManager.addListener(this);
 	}
 
 	public function update(dt:Float) {
-		var p = new Point(1920*0.1, 1080*0.85);
-		camera.screenToCamera(p);
-		x = p.x;
-		y = p.y;
 		mana.tile.scrollDiscrete(50*dt, 0);
 	}
 
@@ -62,7 +59,7 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 
 	function lerpMana() {
 		var r = measurePercentages[Army.singleton.rangeLeft];
-		TweenManager.singleton.add(new MoveBounceTween(mana, {x:mana.x, y:mana.y}, {x:mana.x, y:(1-r)*190 + r*10}, 0, 1));
+		TweenManager.singleton.add(new MoveBounceTween(mana, {x:mana.x, y:mana.y}, {x:mana.x, y:(1-r)*190 + r*10}, 0, 0.5));
 	}
 
 	function calcMeasurements() {

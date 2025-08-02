@@ -20,10 +20,11 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
     var mouseJoint: B2MouseJoint;
     var necromancer: Necromancer;
     var totalTime = 0.0;
-    var timeFetching = 0.0;
+    var timeExecuting = 0.0;
 
     public function new(p: Object, n: Necromancer, b: B2Body) {
         super();
+        hitpoints = 2;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         destination = new Vector2D();
@@ -41,7 +42,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         mouse_joint_definition.target = destination;
         mouse_joint_definition.maxForce = 10;
         mouse_joint_definition.dampingRatio = 0.75;
-        mouse_joint_definition.frequencyHz = 0.5;
+        mouse_joint_definition.frequencyHz = 0.75;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
     }
@@ -64,18 +65,22 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
                 d.y += (RNGManager.rand.rand()-0.5)/12;
                 destination = d;
             }
-        } if (state == FetchingCorpse) {
+        } else if (state == FetchingCorpse) {
             var cp: Vector2D = body.getPosition();
             cp -= corpse.body.getPosition();
             destination = corpse.body.getPosition() - cp.normalize()*0.5;
-            timeFetching += dt;
-            if (timeFetching > 3) {
+            timeExecuting += dt;
+            if (timeExecuting > 3) {
                 corpse.attachToBody(body);
                 MessageManager.sendMessage(new CorpsePickup());
                 state = Idle;
             }
+        } else if (state == Attacking) {
+            var v: Vector2D = body.getPosition();
+            v -= target.getPosition();
+            destination = target.getPosition() - v.normalize();
         } else 
-            timeFetching = 0;
+            timeExecuting = 0;
         mouseJoint.setTarget(destination);
     }
 }

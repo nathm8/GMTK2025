@@ -1,5 +1,6 @@
 package utilities;
 
+import gamelogic.Unit;
 import gamelogic.Corpse;
 import gamelogic.Location;
 import hxd.Event;
@@ -9,6 +10,7 @@ class Message {public function new(){}}
 
 class PhysicsStepDone extends Message {}
 class Restart extends Message {}
+class TogglePhysicsView extends Message {}
 class MouseClick extends Message {
 	public var event: Event;
 	public var worldPosition: Vector2D;
@@ -41,6 +43,10 @@ class March extends Message {}
 class TurnComplete extends Message {}
 class CorpsePickup extends Message {}
 class ResetOrb extends Message {}
+class UnitDeath extends Message {
+	public var unit: Unit;
+	public function new(k: Unit) {super(); unit = k;}
+}
 class LocationDeselected extends Message {
 	public var location: Location;
 	public function new(k: Location) {super(); location = k;}

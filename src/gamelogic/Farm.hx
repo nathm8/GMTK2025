@@ -10,8 +10,6 @@ import utilities.MessageManager;
 
 class Farm extends Location {
  
-    var peasants = new Array<Peasant>();
-
     public function new(p: Object, pos: Vector2D, i: Int, n: Array<Int>, m: Map) {
         super(p, i, n, m);
         position = pos;
@@ -25,17 +23,17 @@ class Farm extends Location {
     }
 
     function spawnPeasant() {
-        peasants.push(new Peasant(graphics.parent, this));
+        enemies.push(new Peasant(graphics.parent, this));
     }
 
     public override function update(dt: Float) {
         super.update(dt);
-        for (p in peasants) p.update(dt);
+        for (p in enemies) p.update(dt);
     }
 
     public override function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, TurnComplete)) {
-            if (peasants.length < 10)
+            if (enemies.length < 10)
                 spawnPeasant();
         }
         return super.receiveMessage(msg);

@@ -1,5 +1,6 @@
 package gamelogic;
 
+import gamelogic.Enemy.EnemyState;
 import gamelogic.Location;
 import box2D.dynamics.B2Body;
 import gamelogic.Unit.DestinationDirectable;
@@ -19,23 +20,22 @@ import h2d.Bitmap;
 import utilities.Vector2D;
 import utilities.MessageManager;
 
-enum EnemyState {
-    Idle;
-    Attacking;
-}
-
-class Peasant implements Updateable implements MessageListener implements DestinationDirectable {
+class Peasant implements Enemy implements MessageListener implements DestinationDirectable implements Combatant {
  
-    var _abb = "peasant";
     public var graphics: Graphics;
     var mouseJoint: B2MouseJoint;
 	public var destination:Vector2D;
-    var body: B2Body;
-    var state = Idle;
+    public var body: B2Body;
+    public var state = Idle;
     var totalTime = 0.0;
     var location: Location;
+	public var hitpoints(default, set):Float;
+	public var isUndead = false;
+	public var target:B2Body;
+
 
     public function new(p: Object, l: Location) {
+        hitpoints = 1;
         totalTime = RNGManager.rand.rand();
         location = l;
         MessageManager.addListener(this);
@@ -61,7 +61,7 @@ class Peasant implements Updateable implements MessageListener implements Destin
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
         mouse_joint_definition.maxForce = 0.3;
-        mouse_joint_definition.dampingRatio = 1;
+        mouse_joint_definition.dampingRatio = 0.8;
         mouse_joint_definition.frequencyHz = 0.1;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
@@ -84,5 +84,21 @@ class Peasant implements Updateable implements MessageListener implements Destin
                 mouseJoint.setTarget(destination);
             }
         }
+    }
+
+    public function attack(c:Combatant) {
+        state = Attacking;
+        target = c.body;
+        destination = c.body.getPosition();
+    }
+
+    public function set_hitpoints(value:Float):Float {
+        trace("peasant damaged");
+        if (value <= 0) {
+            state = Dead;
+            trace("peasant died");
+        }
+        hitpoints = value;
+        return value;
     }
 }

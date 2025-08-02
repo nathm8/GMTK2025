@@ -69,6 +69,8 @@ class Main extends hxd.App implements MessageListener {
 				switch (event.keyCode) {
 					case hxd.Key.ESCAPE:
 						MessageManager.sendMessage(new Restart());
+					case hxd.Key.F2:
+						PhysicalWorld.debugView = !PhysicalWorld.debugView;
 					// case hxd.Key.ENTER:
 				}
 			case EKeyUp:

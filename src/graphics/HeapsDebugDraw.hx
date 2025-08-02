@@ -10,9 +10,9 @@ import box2D.common.B2Color;
 
 class HeapsDebugDraw extends B2DebugDraw {
     
-    var graphics: Graphics;
+    public var graphics: Graphics;
 
-    public function new(parent: Object) {
+    public function new(parent: Object=null) {
         super();
         graphics = new Graphics(parent);
         setFlags(B2DebugDraw.e_shapeBit | B2DebugDraw.e_aabbBit | B2DebugDraw.e_jointBit);

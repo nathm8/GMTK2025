@@ -21,10 +21,11 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     var necromancer: Necromancer;
     var necromancerPositions = new Array<Vector2D>();
     var totalTime = 0.0;
-    var timeFetching = 0.0;
+    var timeExecuting = 0.0;
 
     public function new(p: Object, n: Necromancer, b: B2Body) {
         super();
+        hitpoints = 1;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         destination = new Vector2D();
@@ -42,7 +43,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         mouse_joint_definition.target = destination;
         mouse_joint_definition.maxForce = 1;
         mouse_joint_definition.dampingRatio = 1;
-        mouse_joint_definition.frequencyHz = 0.3;
+        mouse_joint_definition.frequencyHz = 0.5;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
 
@@ -75,14 +76,18 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
             var cp: Vector2D = body.getPosition();
             cp -= corpse.body.getPosition();
             destination = corpse.body.getPosition() - cp.normalize()*0.5;
-            timeFetching += dt;
-            if (timeFetching > 3) {
+            timeExecuting += dt;
+            if (timeExecuting > 3) {
                 corpse.attachToBody(body);
                 MessageManager.sendMessage(new CorpsePickup());
                 state = Idle;
             }
+        } else if (state == Attacking) {
+            var v: Vector2D = body.getPosition();
+            v -= target.getPosition();
+            destination = target.getPosition() - v.normalize();
         } else 
-            timeFetching = 0;
+            timeExecuting = 0;
         mouseJoint.setTarget(destination);
     }
 }

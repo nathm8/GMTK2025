@@ -47,9 +47,9 @@ class Necromancer extends Unit implements MessageListener implements Destination
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 500;
-        mouse_joint_definition.dampingRatio = 1;
-        mouse_joint_definition.frequencyHz = 1;
+        mouse_joint_definition.maxForce = 50;
+        mouse_joint_definition.dampingRatio = 0.9;
+        mouse_joint_definition.frequencyHz = 0.9;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
     }
