@@ -69,7 +69,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
             cp -= corpse.body.getPosition();
             destination = corpse.body.getPosition() - cp.normalize()*0.5;
             timeFetching += dt;
-            if (timeFetching > 1) {
+            if (timeFetching > 3) {
                 corpse.attachToBody(body);
                 MessageManager.sendMessage(new CorpsePickup());
                 state = Idle;

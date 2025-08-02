@@ -68,6 +68,9 @@ class Location implements Updateable implements MessageListener {
             var params = cast(msg, MouseRelease);
             if (position.distanceTo(params.worldPosition) < 100) {
                 if (selected) {
+                    if (id == hqID && Army.singleton.state == Planning) {
+                        return false;
+                    }
                     selected = false;
                     highlight.visible = false;
                     targetSelected.visible = false;

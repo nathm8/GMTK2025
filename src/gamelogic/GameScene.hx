@@ -1,5 +1,7 @@
 package gamelogic;
 
+import utilities.Vector2D;
+import graphics.ui.ManaOrb;
 import h2d.Scene;
 import h2d.Text;
 import h2d.col.Point;
@@ -25,8 +27,10 @@ class GameScene extends Scene implements MessageListener {
 
 		MessageManager.addListener(this);
 
+		
 		updateables.push(new Map(this));
 		updateables.push(new Army(this));
+		updateables.push(new ManaOrb(this, camera));
 	}
 	
 	public function update(dt:Float) {
@@ -50,20 +54,28 @@ class GameScene extends Scene implements MessageListener {
 	}
 
 	function cameraControl() {
-		if (Key.isDown(Key.A))
-			camera.move(-10,0);
-		if (Key.isDown(Key.D))
-			camera.move(10,0);
-		if (Key.isDown(Key.W))
-			camera.move(0,-10);
-		if (Key.isDown(Key.S))
-			camera.move(0,10);
-		if (Key.isDown(Key.E))
-			cameraScale *= 1.1;
-		if (Key.isDown(Key.Q))
-			cameraScale *= 0.9;
-		camera.setScale(cameraScale, cameraScale);
-		fpsText.setScale(1 / cameraScale);
+		// if (Key.isDown(Key.A))
+		// 	camera.move(-10,0);
+		// if (Key.isDown(Key.D))
+		// 	camera.move(10,0);
+		// if (Key.isDown(Key.W))
+		// 	camera.move(0,-10);
+		// if (Key.isDown(Key.S))
+		// 	camera.move(0,10);
+		// if (Key.isDown(Key.E))
+		// 	cameraScale *= 1.1;
+		// if (Key.isDown(Key.Q))
+		// 	cameraScale *= 0.9;
+		// camera.setScale(cameraScale, cameraScale);
+		// fpsText.setScale(1 / cameraScale);
+
+		// TODO, look-ahead when planning
+
+		var pos = new Vector2D(camera.x, camera.y);
+		if ((pos - Necromancer.cameraPos).magnitude > 100) {
+			camera.x = Necromancer.cameraPos.x*0.001 + camera.x*0.999;
+			camera.y = Necromancer.cameraPos.y*0.001 + camera.y*0.999;
+		}
 	}
 
 }

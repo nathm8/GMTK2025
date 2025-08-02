@@ -67,6 +67,9 @@ class Army implements Updateable implements MessageListener {
         if (Std.isOfType(msg, LocationDeselected)) {
             var params = cast(msg, LocationDeselected);
             var l = route.pop();
+            l.highlightRoads = false;
+            l.highlight.visible = false;
+            l.selected = false;
             while (l != params.location) {
                 l.highlightRoads = false;
                 l.highlight.visible = false;
@@ -183,15 +186,18 @@ class Army implements Updateable implements MessageListener {
         var skele_bonus = [0, 2, 4, 8, 16, 32];
         var z_index = 0;
         var s_index = 0;
-        while (num_zombs > 0)
-            num_zombs -= zomb_thresholds[z_index++];
-        while (num_skele > 0)
-            num_skele -= skele_thresholds[s_index++];
+        while (num_zombs > 0) {
+            z_index++;
+            num_zombs -= zomb_thresholds[z_index];
+        }
+        while (num_skele > 0) {
+            s_index++;
+            num_skele -= skele_thresholds[s_index];
+        }
         return 2 + zomb_bonus[z_index] + skele_bonus[s_index];
     }
 
     public static function canReturnHomeFrom(r:Int, route: Array<Location>, l:Location) {
-        trace("canReturn", r, route.length, l.id);
         if (l.id == Location.hqID) return true;
         if (route.length == 1) return true;
         if (r <= 0)
