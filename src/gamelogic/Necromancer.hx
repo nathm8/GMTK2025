@@ -108,4 +108,8 @@ class Necromancer extends Unit implements MessageListener implements Destination
         cameraPos.x = graphics.x;
         cameraPos.y = graphics.y;
     }
+
+    public function destroy() {}
+
+    public override function attack(c: Combatant) {}
 }

@@ -26,6 +26,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     public function new(p: Object, n: Necromancer, b: B2Body) {
         super();
         hitpoints = 1;
+        corpseType = ZombieCorpse;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         destination = new Vector2D();
@@ -42,7 +43,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
         mouse_joint_definition.maxForce = 1;
-        mouse_joint_definition.dampingRatio = 1;
+        mouse_joint_definition.dampingRatio = 0.9;
         mouse_joint_definition.frequencyHz = 0.5;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
@@ -53,10 +54,17 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     }
 
     public function receiveMessage(msg:Message):Bool {
+        if (Std.isOfType(msg, UnitDeath)) {
+            var u = cast(msg, UnitDeath).unit;
+            if (u == this)
+                graphics.rotation = Math.PI/2;
+            state = Dead;
+        }
         return false;
     }
     
     public override function update(dt: Float) {
+        if (state == Dead) return;
         super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
@@ -75,7 +83,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         } if (state == FetchingCorpse) {
             var cp: Vector2D = body.getPosition();
             cp -= corpse.body.getPosition();
-            destination = corpse.body.getPosition() - cp.normalize()*0.5;
+            destination = corpse.body.getPosition() - cp.normalize()*0.05;
             timeExecuting += dt;
             if (timeExecuting > 3) {
                 corpse.attachToBody(body);
@@ -85,9 +93,14 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         } else if (state == Attacking) {
             var v: Vector2D = body.getPosition();
             v -= target.getPosition();
-            destination = target.getPosition() - v.normalize();
+            destination = target.getPosition() - v.normalize()*0.05;
         } else 
             timeExecuting = 0;
         mouseJoint.setTarget(destination);
+    }
+
+    public function destroy() {
+        graphics.remove();
+        PhysicalWorld.gameWorld.destroyJoint(mouseJoint);
     }
 }

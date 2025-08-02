@@ -1,5 +1,6 @@
 package utilities;
 
+import gamelogic.Enemy;
 import gamelogic.Unit;
 import gamelogic.Corpse;
 import gamelogic.Location;
@@ -46,6 +47,10 @@ class ResetOrb extends Message {}
 class UnitDeath extends Message {
 	public var unit: Unit;
 	public function new(k: Unit) {super(); unit = k;}
+}
+class EnemyDeath extends Message {
+	public var enemy: Enemy;
+	public function new(k: Enemy) {super(); enemy = k;}
 }
 class LocationDeselected extends Message {
 	public var location: Location;

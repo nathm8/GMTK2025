@@ -1,5 +1,6 @@
 package gamelogic;
 
+import gamelogic.Corpse.CorpseType;
 import utilities.MessageManager;
 import utilities.Vector2D;
 import box2D.dynamics.B2Body;
@@ -16,7 +17,7 @@ interface DestinationDirectable {
     public var destination: Vector2D;
 }
 
-class Unit implements Updateable implements DestinationDirectable implements Combatant {
+abstract class Unit implements Updateable implements DestinationDirectable implements Combatant {
     public var corpse: Corpse;
     public var id: Int;
     static var maxID = 0;
@@ -26,9 +27,12 @@ class Unit implements Updateable implements DestinationDirectable implements Com
 	public var isUndead:Bool=true;
 	public var body:B2Body;
 	public var target:B2Body;
+	public var resurrectionCount: Int;
+	public var corpseType:CorpseType;
 
-    public function new() {
+    public function new(rc=0) {
         id = maxID++;    
+        resurrectionCount = rc;
     }
 
     public function update(dt:Float) {
@@ -42,8 +46,10 @@ class Unit implements Updateable implements DestinationDirectable implements Com
 
     function set_hitpoints(value:Float):Float {
         trace("undead damaged");
-        if (value <= 0)
+        if (value <= 0) {
+            trace("undead died");
             MessageManager.sendMessage(new UnitDeath(this));
+        }
         hitpoints = value;
         return value;
     }
@@ -53,4 +59,6 @@ class Unit implements Updateable implements DestinationDirectable implements Com
         target = c.body;
         destination = c.body.getPosition();
     }
+
+    abstract public function destroy() : Void;
 }

@@ -1,5 +1,6 @@
 package gamelogic;
 
+import gamelogic.Corpse.CorpseType;
 import gamelogic.Enemy.EnemyState;
 import gamelogic.Location;
 import box2D.dynamics.B2Body;
@@ -32,7 +33,8 @@ class Peasant implements Enemy implements MessageListener implements Destination
 	public var hitpoints(default, set):Float;
 	public var isUndead = false;
 	public var target:B2Body;
-
+	public var resurrectionCount = 0;
+	public var corpseType:CorpseType;
 
     public function new(p: Object, l: Location) {
         hitpoints = 1;
@@ -41,6 +43,8 @@ class Peasant implements Enemy implements MessageListener implements Destination
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         new Bitmap(hxd.Res.img.peasant.toTile().center(), graphics);
+
+        corpseType = PeasantCorpse;
         
         var body_definition = new B2BodyDef();
         body_definition.type = B2BodyType.DYNAMIC_BODY;
@@ -97,6 +101,8 @@ class Peasant implements Enemy implements MessageListener implements Destination
         if (value <= 0) {
             state = Dead;
             trace("peasant died");
+            graphics.rotation = Math.PI/2;
+            MessageManager.sendMessage(new EnemyDeath(this));
         }
         hitpoints = value;
         return value;

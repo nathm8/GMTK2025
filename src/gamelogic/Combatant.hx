@@ -1,5 +1,6 @@
 package gamelogic;
 
+import gamelogic.Corpse.CorpseType;
 import box2D.dynamics.B2Body;
 
 interface Combatant {
@@ -7,5 +8,7 @@ interface Combatant {
     public var target: B2Body;
     public var hitpoints(default, set): Float;   
     public var isUndead: Bool;
+    public var resurrectionCount: Int;
+    public var corpseType: CorpseType;
     public function attack(c: Combatant): Void;
 }
