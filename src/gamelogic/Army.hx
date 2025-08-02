@@ -1,5 +1,7 @@
 package gamelogic;
 
+import utilities.Vector2D;
+import gamelogic.physics.PhysicalWorld.PHYSICSCALE;
 import graphics.TweenManager;
 import graphics.TweenManager.DelayedCallTween;
 import utilities.RNGManager;
@@ -99,6 +101,43 @@ class Army implements Updateable implements MessageListener {
             else if (params.corpse.type == SkeletonCorpse)
                 units.push(new Skeleton(graphics, necromancer, params.corpse.body));
         }
+        if (Std.isOfType(msg, UnitDeath)) {
+            var u = cast(msg, UnitDeath).unit;
+            units.remove(u);
+            if (u.corpse != null)
+                route[0].corpses.push(u.corpse);
+            var p: Vector2D = u.body.getPosition();
+            p *= PHYSICSCALE;
+            route[0].generateCorpse(p, u);
+            u.destroy();
+            // TODO, fade to black, record failed attempt
+            if (units.length == 0) {
+                trace("defeat");
+            }
+            // reshuffle combatants
+            else if (state == Battling)
+                battle();
+            trace("friendly death");
+            trace("enemies",route[0].enemies.length);
+            trace("units",units.length);
+        }
+        if (Std.isOfType(msg, EnemyDeath)) {
+            var e = cast(msg, EnemyDeath).enemy;
+            // create corpse
+            var p: Vector2D = e.body.getPosition();
+            p *= PHYSICSCALE;
+            route[0].generateCorpse(p, e);
+            // reshuffle combatants
+            if (state == Battling)
+                battle();
+            // no enemies, advance
+            if (route[0].enemies.length == 0) {
+                trace("victory");
+            }
+            trace("enemy death");
+            trace("enemies",route[0].enemies.length);
+            trace("units",units.length);
+        }
         return false;
     }
 
@@ -119,7 +158,7 @@ class Army implements Updateable implements MessageListener {
         } else {
             if (Std.isOfType(route[0], Graveyard)) {
                 for (_ in 0...RNGManager.rand.random(2) + 1)
-                    route[0].generateCorpse(graphics);
+                    route[0].generateCorpse();
                 // Collect Corpses
                 collectCorpses();
                 // Continue

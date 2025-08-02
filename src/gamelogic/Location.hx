@@ -1,5 +1,6 @@
 package gamelogic;
 
+import box2D.dynamics.B2Body;
 import gamelogic.Corpse;
 import h2d.Bitmap;
 import utilities.RNGManager;
@@ -99,15 +100,27 @@ class Location implements Updateable implements MessageListener {
         return false;
     }
 
-    public function generateCorpse(p: Object, pos: Vector2D = null, t: CorpseType = null, rc: Int = 0) {
+    // public function generateCorpse(pos: Vector2D = null, t: CorpseType = null, rc: Int = 0) {
+    public function generateCorpse(pos: Vector2D = null, c: Combatant = null) {
+        var t: CorpseType;
+        var rc: Int;
+        var b: B2Body;
+        if (c != null) {
+            t = c.corpseType;
+            rc = c.resurrectionCount;
+            b = c.body;
+        } else {
+            rc = 0;
+            b = null;
+            // Graveyards spawn skelies sometimes
+            if (RNGManager.rand.random(4) == 0)
+                t = SkeletonCorpse;
+            else
+                t = ZombieCorpse;
+        }
         if (pos == null)
             pos = position + new Vector2D(RNGManager.rand.random(200)-100, RNGManager.rand.random(200)-100);
-        // Graveyards spawn skelies sometimes
-        if (RNGManager.rand.random(4) == 0)
-            t = SkeletonCorpse;
-        else
-            t = ZombieCorpse;
-        corpses.push(new Corpse(highlight.parent.parent, pos, t, rc));
+        corpses.push(new Corpse(highlight.parent.parent, pos, t, b, rc));
     }
 
 	public function update(dt:Float) {

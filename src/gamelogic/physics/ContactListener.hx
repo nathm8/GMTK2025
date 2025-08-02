@@ -35,14 +35,18 @@ class ContactListener extends B2ContactListener {
         pickUpCheck(object_b, object_a);
         
         function combatCheck(uda: Dynamic, udb: Dynamic) {
+            if (Std.isOfType(uda, Necromancer) || Std.isOfType(udb, Necromancer))
+                return;
             if (!(Std.isOfType(uda, Combatant) && Std.isOfType(udb, Combatant)))
                 return;
             var a = cast(uda, Combatant);
             var b = cast(udb, Combatant);
             if (a.isUndead && b.isUndead || !a.isUndead && !b.isUndead)
                 return;
-            a.hitpoints -= 0.001;
-            b.hitpoints -= 0.001;
+            if (a.hitpoints <= 0 || b.hitpoints <= 0)
+                return;
+            a.hitpoints -= 0.01;
+            b.hitpoints -= 0.01;
         }
 
         combatCheck(object_b, object_a);

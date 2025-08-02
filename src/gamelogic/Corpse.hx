@@ -34,7 +34,7 @@ class Corpse implements Updateable {
     var resurrectionCount = 0;
     // var distanceJoint: B2DistanceJoint;
 
-    public function new(p: Object, pos: Vector2D, t: CorpseType, rez_count=0) {
+    public function new(p: Object, pos: Vector2D, t: CorpseType, b:B2Body, rez_count=0) {
         // TODO, size and power increase
         resurrectionCount = rez_count;
         graphics = new Graphics(p);
@@ -56,17 +56,20 @@ class Corpse implements Updateable {
         // TweenManager.singleton.add(new RaiseTween(sprite, 20, 0, 0, 2));
         TweenManager.singleton.add(new FadeInTween(graphics, 0, 0.5));
 
-        var body_definition = new B2BodyDef();
-        body_definition.type = B2BodyType.DYNAMIC_BODY;
-        body_definition.position = pos*PHYSICSCALEINVERT;
-        body_definition.linearDamping = 0.25;
-        var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
-        var fixture_definition = new B2FixtureDef();
-        fixture_definition.shape = circle;
-        fixture_definition.userData = this;
-        fixture_definition.density = 0.00001;
-        body = PhysicalWorld.gameWorld.createBody(body_definition);
-        body.createFixture(fixture_definition);
+        if (b == null) {
+            var body_definition = new B2BodyDef();
+            body_definition.type = B2BodyType.DYNAMIC_BODY;
+            body_definition.position = pos*PHYSICSCALEINVERT;
+            body_definition.linearDamping = 0.25;
+            var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+            var fixture_definition = new B2FixtureDef();
+            fixture_definition.shape = circle;
+            fixture_definition.userData = this;
+            fixture_definition.density = 0.00001;
+            body = PhysicalWorld.gameWorld.createBody(body_definition);
+            body.createFixture(fixture_definition);
+        } else
+            body = b;
 
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;

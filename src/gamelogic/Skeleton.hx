@@ -25,6 +25,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
     public function new(p: Object, n: Necromancer, b: B2Body) {
         super();
         hitpoints = 2;
+        corpseType = SkeletonCorpse;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         destination = new Vector2D();
@@ -48,10 +49,17 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
     }
 
     public function receiveMessage(msg:Message):Bool {
+        if (Std.isOfType(msg, UnitDeath)) {
+            var u = cast(msg, UnitDeath).unit;
+            if (u == this)
+                graphics.rotation = Math.PI/2;
+            state = Dead;
+        }
         return false;
     }
     
     public override function update(dt: Float) {
+        if (state == Dead) return;
         super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
@@ -68,7 +76,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         } else if (state == FetchingCorpse) {
             var cp: Vector2D = body.getPosition();
             cp -= corpse.body.getPosition();
-            destination = corpse.body.getPosition() - cp.normalize()*0.5;
+            destination = corpse.body.getPosition() - cp.normalize()*0.05;
             timeExecuting += dt;
             if (timeExecuting > 3) {
                 corpse.attachToBody(body);
@@ -78,9 +86,14 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         } else if (state == Attacking) {
             var v: Vector2D = body.getPosition();
             v -= target.getPosition();
-            destination = target.getPosition() - v.normalize();
+            destination = target.getPosition() - v.normalize()*0.05;
         } else 
             timeExecuting = 0;
         mouseJoint.setTarget(destination);
+    }
+
+    public function destroy() {
+        graphics.remove();
+        PhysicalWorld.gameWorld.destroyJoint(mouseJoint);
     }
 }
