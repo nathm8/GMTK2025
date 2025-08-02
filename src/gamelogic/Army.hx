@@ -60,7 +60,6 @@ class Army implements Updateable implements MessageListener {
                     route.push(params.location);
                     MessageManager.sendMessage(new March());
                     state = Marching;
-                    return false;
                 }
             } else {
                 route.push(params.location);
