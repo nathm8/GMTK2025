@@ -33,5 +33,19 @@ class ContactListener extends B2ContactListener {
         // idk if this is actually necessary but gotta go fast, explore with box2d later
         pickUpCheck(object_a, object_b);
         pickUpCheck(object_b, object_a);
+        
+        function combatCheck(uda: Dynamic, udb: Dynamic) {
+            if (!(Std.isOfType(uda, Combatant) && Std.isOfType(udb, Combatant)))
+                return;
+            var a = cast(uda, Combatant);
+            var b = cast(udb, Combatant);
+            if (a.isUndead && b.isUndead || !a.isUndead && !b.isUndead)
+                return;
+            a.hitpoints -= 0.001;
+            b.hitpoints -= 0.001;
+        }
+
+        combatCheck(object_b, object_a);
+        combatCheck(object_a, object_b);
     }
 }

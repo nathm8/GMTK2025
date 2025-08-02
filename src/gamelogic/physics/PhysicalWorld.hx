@@ -1,5 +1,6 @@
 package gamelogic.physics;
 
+import h2d.Scene;
 import h2d.Object;
 import utilities.MessageManager;
 import graphics.HeapsDebugDraw;
@@ -12,6 +13,7 @@ var PHYSICSCALEINVERT = 1/PHYSICSCALE;
 class PhysicalWorld {
     public static var gameWorld = new B2World(new B2Vec2(0, 0), true);
     static var debugDraw: HeapsDebugDraw;
+    public static var debugView = false;
 
     public static function reset() {
         gameWorld = new B2World(new B2Vec2(0, 0), true);
@@ -19,8 +21,9 @@ class PhysicalWorld {
         gameWorld.setContactFilter(new ContactFilter());
     }
 
-    public static function setScene(scene: Object) {
-        debugDraw = new HeapsDebugDraw(scene);
+    public static function setScene(scene: Scene) {
+        debugDraw = new HeapsDebugDraw();
+        scene.add(debugDraw.graphics, 1);
         gameWorld.setDebugDraw(debugDraw);
     }
 
@@ -30,8 +33,9 @@ class PhysicalWorld {
         // trace("PWU: clear");
         gameWorld.clearForces();
         // trace("PWU: send");
-        // debugDraw.clear();
-        // gameWorld.drawDebugData();
+        debugDraw.clear();
+        if (debugView)
+            gameWorld.drawDebugData();
         MessageManager.sendMessage(new PhysicsStepDone());
     }
 }

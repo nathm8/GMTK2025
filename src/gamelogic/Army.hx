@@ -17,6 +17,7 @@ enum ArmyState {
     Planning;
     Marching;
     AwaitingPickup;
+    Battling;
 }
 
 class Army implements Updateable implements MessageListener {
@@ -122,12 +123,16 @@ class Army implements Updateable implements MessageListener {
                 // Collect Corpses
                 collectCorpses();
                 // Continue
-            } if (Std.isOfType(route[0], Farm)) {
-                // Battle
-                // Collect Corpses
-                // Continue
-                // MessageManager.sendMessage(new March());
+            } if (route[0].enemies.length > 0) {
+                battle();
             }
+            // if (Std.isOfType(route[0], Farm)) {
+            //     // Battle
+            //     battle();
+            //     // Collect Corpses
+            //     // Continue
+            //     // resolve the area
+            // }
         }
     }
 
@@ -144,16 +149,38 @@ class Army implements Updateable implements MessageListener {
         }
     }
 
+    function battle() {
+        trace("army battling");
+        state = Battling;
+        var friendlies = units.copy();
+        RNGManager.rand.shuffle(friendlies);
+        var enemies = route[0].enemies.copy();
+        RNGManager.rand.shuffle(enemies);
+
+        for (u in units) {
+            if (enemies.length == 0) {
+                enemies = route[0].enemies.copy();
+                RNGManager.rand.shuffle(enemies);
+            }
+            var e = enemies.pop();
+            u.attack(e);
+        }
+
+        for (e in enemies) {
+            if (friendlies.length == 0) {
+                friendlies = units.copy();
+                RNGManager.rand.shuffle(friendlies);
+            }
+            var f = friendlies.pop();
+            e.attack(f);
+        }
+    }
+
     public function update(dt:Float) {
         graphics.clear();
         footsteps.remove();
         footsteps = new Graphics(graphics);
         if (state == Planning) {
-            // TODO visualise neighbours
-            // graphics.beginFill(0xFF0000, 0.1);
-            // graphics.drawCircle(lastLocation.position.x, lastLocation.position.y, rangeLeft);
-            // graphics.endFill();
-
             var prev = route[0];
             for (i in 1...route.length) {
                 new Footsteps(footsteps, prev.position, route[i].position);
@@ -202,11 +229,11 @@ class Army implements Updateable implements MessageListener {
     }
 
     public static function canReturnHomeFrom(r:Int, route: Array<Location>, l:Location) {
-        if (l.id == Location.hqID) return true;
+        // trace(r, route.length, l.id, l.id == Location.hqID);
         if (route.length == 1) return true;
-        if (r <= 0)
-            return false;
-        // trace(l.neighbours);
+        if (l.id == Location.hqID && r >= 0) return true;
+        if (r <= 0) return false;
+        if (route.contains(l)) return false;
         var n_route = route.copy();
         n_route.push(l);
         for (n in l.neighbours) {

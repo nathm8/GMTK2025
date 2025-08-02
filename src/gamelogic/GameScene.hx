@@ -18,6 +18,7 @@ class GameScene extends Scene implements MessageListener {
 	var fpsText: Text;
 	var cameraScale = 1.0;
 	var lastMousePos: Vector2D;
+	var viewPhysics = false;
 
 	public function new() {
 		super();
@@ -79,17 +80,16 @@ class GameScene extends Scene implements MessageListener {
 		// camera.setScale(cameraScale, cameraScale);
 		// fpsText.setScale(1 / cameraScale);
 
-		// TODO, look-ahead when planning
-
 		var pos = new Vector2D(camera.x, camera.y);
 		var centre = Necromancer.cameraPos;
 		if (Army.singleton.state == Planning) {
-			// centre = Army.singleton.route[Army.singleton.route.length-1].position;
+			if (lastMousePos.magnitude > 1500)
+				lastMousePos = lastMousePos.normalize()*1500;
 			centre = lastMousePos;
 		}
 		if ((pos - centre).magnitude > 50) {
-			camera.x = centre.x*0.01 + camera.x*0.99;
-			camera.y = centre.y*0.01 + camera.y*0.99;
+			camera.x = centre.x*0.05 + camera.x*0.95;
+			camera.y = centre.y*0.05 + camera.y*0.95;
 		}
 	}
 

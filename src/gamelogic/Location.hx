@@ -19,6 +19,7 @@ class Location implements Updateable implements MessageListener {
     public var highlightRoads(get,set): Bool;
     public var graphics: Graphics;
 
+    public var enemies = new Array<Enemy>();
     public var corpses = new Array<Corpse>();
 
     public var neighbours = new Array<Location>();
@@ -52,7 +53,7 @@ class Location implements Updateable implements MessageListener {
 
     public function receiveMessage(msg:Message):Bool {
         if (Army.singleton == null) return false;
-        if (Army.singleton.state == Marching || Army.singleton.state == AwaitingPickup) return false;
+        if (Army.singleton.state == Battling || Army.singleton.state == Marching || Army.singleton.state == AwaitingPickup) return false;
         if (Army.singleton.state == Idle && id != hqID) return false;
         if (Std.isOfType(msg, MouseMove)) {
             var params = cast(msg, MouseMove);
