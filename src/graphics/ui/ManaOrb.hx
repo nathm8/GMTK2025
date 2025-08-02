@@ -1,5 +1,7 @@
 package graphics.ui;
 
+import gamelogic.Army;
+import h2d.Graphics;
 import utilities.MessageManager;
 import utilities.MessageManager.MessageListener;
 import h2d.col.Point;
@@ -12,22 +14,29 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 
 	var camera: Camera;
 	var mana: Bitmap;
+	var orb: Bitmap;
+	var measures: Graphics;
+	var measurePercentages = new Array<Float>();
+
 	public function new(p :Object, c: Camera) {
 		super(p);
 		camera = c;
-		var orb = new Bitmap(hxd.Res.img.orb.toTile().center(), this);
+		orb = new Bitmap(hxd.Res.img.orb.toTile().center(), this);
 		var mask_area = new Bitmap(hxd.Res.img.orbmask.toTile().center(), orb);
 		mana = new Bitmap(hxd.Res.img.mana.toTile().center(), orb);
-		mana.y = 190;
-		// 20 = full
+		mana.y = 10;
+		// 10 = full
 		// 190 = empty
 		mana.tileWrap = true;
 		mana.tile.scrollDiscrete(0, -1);
+		measures = new Graphics(orb);
 		var orbouter = new Bitmap(hxd.Res.img.orbouter.toTile().center(), orb);
 
 		var mask = new h2d.filter.Mask(mask_area);
 		mana.filter = mask;
+		measures.filter = mask;
 
+		calcMeasurements();
 		MessageManager.addListener(this);
 	}
 
@@ -40,6 +49,24 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 	}
 
 	public function receiveMessage(msg:Message):Bool {
+		if (Std.isOfType(msg, TurnComplete)) {
+			calcMeasurements();
+		}
+		if (Std.isOfType(msg, LocationSelected)) {
 		return false;
+	}
+
+	function calcMeasurements() {
+		measures.clear();
+		measures.lineStyle(5, 0x000000);
+		measurePercentages = new Array<Float>();
+		var lines = Army.singleton.range;
+		var lines = 4;
+		for (y in 1...lines) {
+			var r = y/lines;
+			measurePercentages.push(r);
+			measures.moveTo(10+25*y%2, 100*(1-r) + -130*r);
+			measures.lineTo(100, 100*(1-r) + -130*r);
+		}
 	}
 }

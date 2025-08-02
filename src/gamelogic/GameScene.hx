@@ -72,7 +72,7 @@ class GameScene extends Scene implements MessageListener {
 		// TODO, look-ahead when planning
 
 		var pos = new Vector2D(camera.x, camera.y);
-		if ((pos - Necromancer.cameraPos).magnitude > 100) {
+		if ((pos - Necromancer.cameraPos).magnitude > 50) {
 			camera.x = Necromancer.cameraPos.x*0.001 + camera.x*0.999;
 			camera.y = Necromancer.cameraPos.y*0.001 + camera.y*0.999;
 		}

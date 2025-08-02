@@ -1,5 +1,7 @@
 package gamelogic;
 
+import graphics.TweenManager;
+import graphics.TweenManager.DelayedCallTween;
 import utilities.RNGManager;
 import gamelogic.Corpse;
 import graphics.Footsteps;
@@ -19,7 +21,7 @@ enum ArmyState {
 
 class Army implements Updateable implements MessageListener {
 
-    var range(get, null): Int;
+    public var range(get, null): Int;
     public var rangeLeft(get, null): Int;
     public var route = new Array<Location>();
     public var graphics: Graphics;
@@ -58,11 +60,13 @@ class Army implements Updateable implements MessageListener {
                     route.push(params.location);
                     MessageManager.sendMessage(new March());
                     state = Marching;
+                    return false;
                 }
             } else {
                 route.push(params.location);
                 params.location.highlightRoads = true;
             }
+            MessageManager.sendMessage(new ResetOrb());
         }
         if (Std.isOfType(msg, LocationDeselected)) {
             var params = cast(msg, LocationDeselected);
@@ -79,6 +83,7 @@ class Army implements Updateable implements MessageListener {
             route[route.length-1].highlightRoads = true;
             if (state == Planning && params.location.id == Location.hqID)
                 state = Idle;
+            MessageManager.sendMessage(new ResetOrb());
         }
         if (Std.isOfType(msg, CorpsePickup)) {
             pendingCollections--;
@@ -110,7 +115,7 @@ class Army implements Updateable implements MessageListener {
                     u.corpse = null;
                 }
             }
-            MessageManager.sendMessage(new TurnComplete());
+            TweenManager.singleton.add(new DelayedCallTween(() -> MessageManager.sendMessage(new TurnComplete()), -3, 0));
         } else {
             if (Std.isOfType(route[0], Graveyard)) {
                 for (_ in 0...RNGManager.rand.random(2) + 1)
