@@ -1,5 +1,6 @@
 package graphics.ui;
 
+import graphics.TweenManager.MoveBounceTween;
 import gamelogic.Army;
 import h2d.Graphics;
 import utilities.MessageManager;
@@ -51,22 +52,32 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 	public function receiveMessage(msg:Message):Bool {
 		if (Std.isOfType(msg, TurnComplete)) {
 			calcMeasurements();
+			lerpMana();
 		}
-		if (Std.isOfType(msg, LocationSelected)) {
+		if (Std.isOfType(msg, ResetOrb)) {
+			lerpMana();
+		}
 		return false;
+	}
+
+	function lerpMana() {
+		var r = measurePercentages[Army.singleton.rangeLeft];
+		TweenManager.singleton.add(new MoveBounceTween(mana, {x:mana.x, y:mana.y}, {x:mana.x, y:(1-r)*190 + r*10}, 0, 1));
 	}
 
 	function calcMeasurements() {
 		measures.clear();
 		measures.lineStyle(5, 0x000000);
 		measurePercentages = new Array<Float>();
+		measurePercentages.push(0);
 		var lines = Army.singleton.range;
-		var lines = 4;
 		for (y in 1...lines) {
 			var r = y/lines;
 			measurePercentages.push(r);
-			measures.moveTo(10+25*y%2, 100*(1-r) + -130*r);
+			measures.moveTo(10, 100*(1-r) + -130*r);
+			// measures.moveTo(10+25*y%2, 100*(1-r) + -130*r);
 			measures.lineTo(100, 100*(1-r) + -130*r);
 		}
+		measurePercentages.push(1);
 	}
 }

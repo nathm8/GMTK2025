@@ -137,23 +137,25 @@ class RaiseSmoothTween extends Tween {
 	}
 }
 
+function easeInOutExpo(x: Float): Float {
+	return x == 0
+	  ? 0
+	  : x == 1
+	  ? 1
+	  : x < 0.5 ? Math.pow(2, 20 * x - 10) / 2
+	  : (2 - Math.pow(2, -20 * x + 10)) / 2;
+	}
+
 class MoveBounceTween extends Tween {
 	var drawable:Drawable;
-	var x = [0, 1.1, 0.7, 1];
-	var y = [0, -0.4, 1.5, 1];
-	
 	var original:{x:Float, y:Float};
 	var target:{x:Float, y:Float};
 
-	public function new(d:Drawable, orig:{x:Float, y:Float},  targ: {x:Float, y:Float}, te:Float, tt:Float, retreat=false) {
+	public function new(d:Drawable, orig:{x:Float, y:Float},  targ: {x:Float, y:Float}, te:Float, tt:Float) {
 		super(te, tt);
 		drawable = d;
 		original = orig;
 		target = targ;
-		if (retreat){
-			x[0] = 1; x[3] = 0;
-			y[0] = 1; y[3] = 0;
-		}
 	}
 
 	override function update(dt:Float) {
@@ -161,21 +163,10 @@ class MoveBounceTween extends Tween {
 		// negative te acts as a delay
 		if (timeElapsed < 0)
 			return;
-		var t = Math.pow(timeElapsed / timeTotal, 5);
-		// if (t > 0.5) {
-		// 	var tt = timeElapsed / (timeTotal * timeElapsed);
-		// 	t = tt > 1 ? 1 : tt;
-		// }
-		var bx = Math.pow(1 - t, 3) * x[0]
-			+ 3 * Math.pow(1 - t, 2) * t * x[1]
-			+ 3 * (1 - t) * Math.pow(t, 2) * x[2]
-			+ Math.pow(t, 3) * x[3];
-		var by = Math.pow(1 - bx, 3) * y[0]
-			+ 3 * Math.pow(1 - bx, 2) * bx * y[1]
-			+ 3 * (1 - bx) * Math.pow(bx, 2) * y[2]
-			+ Math.pow(bx, 3) * y[3];
-		drawable.x = (1 - by) * original.x + by*target.x;
-		drawable.y = (1 - by) * original.y + by*target.y;
+		var t = timeElapsed / timeTotal;
+		t = easeInOutExpo(t);
+		drawable.x = (1 - t) * original.x + t*target.x;
+		drawable.y = (1 - t) * original.y + t*target.y;
 	}
 }
 
