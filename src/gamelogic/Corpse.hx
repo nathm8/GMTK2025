@@ -54,7 +54,7 @@ class Corpse implements Updateable {
         graphics.alpha = 0;
 
         // TweenManager.singleton.add(new RaiseTween(sprite, 20, 0, 0, 2));
-        TweenManager.singleton.add(new FadeInTween(graphics, 0, 2));
+        TweenManager.singleton.add(new FadeInTween(graphics, 0, 0.5));
 
         var body_definition = new B2BodyDef();
         body_definition.type = B2BodyType.DYNAMIC_BODY;

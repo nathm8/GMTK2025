@@ -53,9 +53,9 @@ class Map implements Updateable implements MessageListener {
 
         for (cell in diagram.cells) {
             for (n in cell.getNeighbors()){
-                graphics.lineStyle(10, 0xAAAAAA, 0.25);
-                graphics.moveTo(cell.point.x, cell.point.y);
-                graphics.lineTo(n.x, n.y);
+                // graphics.lineStyle(10, 0xAAAAAA, 0.25);
+                // graphics.moveTo(cell.point.x, cell.point.y);
+                // graphics.lineTo(n.x, n.y);
             }
             var p: Vector2D = cell.point;
             if (p == new Vector2D()) {
@@ -68,6 +68,7 @@ class Map implements Updateable implements MessageListener {
             else
                 locations.push(new Graveyard(graphics, p, cell.id, cell.getNeighborIndexes(), this));
         }
+        for (l in locations) l.init();
     }
 
     public function update(dt: Float) {

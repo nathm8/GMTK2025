@@ -40,9 +40,9 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 0.3;
+        mouse_joint_definition.maxForce = 1;
         mouse_joint_definition.dampingRatio = 1;
-        mouse_joint_definition.frequencyHz = 0.1;
+        mouse_joint_definition.frequencyHz = 0.3;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
 
@@ -76,7 +76,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
             cp -= corpse.body.getPosition();
             destination = corpse.body.getPosition() - cp.normalize()*0.5;
             timeFetching += dt;
-            if (timeFetching > 1) {
+            if (timeFetching > 3) {
                 corpse.attachToBody(body);
                 MessageManager.sendMessage(new CorpsePickup());
                 state = Idle;

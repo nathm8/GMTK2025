@@ -7,3 +7,10 @@ UI
 have glow for mousing over locations, instead of target reticle
 have different glow for locations in range of current planned stop
 show error when unable to go further
+
+Victory Stats
+-------
+Days Taken
+Failed Attempts
+Longest Path Taken
+Unit with the Highest Number of Resurrections

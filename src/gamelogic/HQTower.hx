@@ -9,7 +9,6 @@ import utilities.MessageManager;
 
 class HQTower extends Location {
  
-    public var graphics: Graphics;
     static public var singleton: HQTower;
 
     public override function receiveMessage(msg:Message):Bool {
@@ -18,13 +17,12 @@ class HQTower extends Location {
 	}
     
     public function new(p: Object, i: Int, n: Array<Int>, m: Map) {
+        super(p, i, n, m);
         Location.hqID = i;
         singleton = this;
-        graphics = new Graphics(p);
         position = new Vector2D();
-        new Bitmap(hxd.Res.img.tower.toTile().center(), graphics);
-        super(graphics, i, n, m);
-        graphics.y = -50;
+        var bmp = new Bitmap(hxd.Res.img.tower.toTile().center(), graphics);
+        bmp.y = -50;
     }
 
     public override function update(dt: Float) {

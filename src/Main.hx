@@ -1,5 +1,6 @@
 package;
 
+import graphics.ui.ManaOrb;
 import utilities.SoundManager;
 import gamelogic.GameScene;
 import gamelogic.physics.PhysicalWorld;

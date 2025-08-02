@@ -1,5 +1,7 @@
 package gamelogic;
 
+import graphics.TweenManager;
+import graphics.TweenManager.DelayedCallTween;
 import utilities.RNGManager;
 import gamelogic.Corpse;
 import graphics.Footsteps;
@@ -19,14 +21,14 @@ enum ArmyState {
 
 class Army implements Updateable implements MessageListener {
 
-    var range(get, null) = 2;
+    public var range(get, null): Int;
+    public var rangeLeft(get, null): Int;
     public var route = new Array<Location>();
     public var graphics: Graphics;
     public var footsteps: Graphics;
     public var state: ArmyState;
     static public var singleton: Army;
     public var lastLocation(get, null): Location;
-    public var rangeLeft(get, null): Float;
     var necromancer: Necromancer;
 
     public var units = new Array<Unit>();
@@ -48,23 +50,40 @@ class Army implements Updateable implements MessageListener {
     public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, LocationSelected)) {
             var params = cast(msg, LocationSelected);
+            for (l in route) l.highlightRoads = false;
             if (params.location.id == Location.hqID) {
-                if (state == Idle && params.location.id == Location.hqID)
+                if (state == Idle && params.location.id == Location.hqID) {
                     state = Planning;
+                    params.location.highlightRoads = true;
+                }
                 else if (state == Planning) {
                     route.push(params.location);
                     MessageManager.sendMessage(new March());
                     state = Marching;
+                    return false;
                 }
             } else {
                 route.push(params.location);
+                params.location.highlightRoads = true;
             }
+            MessageManager.sendMessage(new ResetOrb());
         }
         if (Std.isOfType(msg, LocationDeselected)) {
             var params = cast(msg, LocationDeselected);
-            route.remove(params.location);
+            var l = route.pop();
+            l.highlightRoads = false;
+            l.highlight.visible = false;
+            l.selected = false;
+            while (l != params.location) {
+                l.highlightRoads = false;
+                l.highlight.visible = false;
+                l.selected = false;
+                l = route.pop();
+            }
+            route[route.length-1].highlightRoads = true;
             if (state == Planning && params.location.id == Location.hqID)
                 state = Idle;
+            MessageManager.sendMessage(new ResetOrb());
         }
         if (Std.isOfType(msg, CorpsePickup)) {
             pendingCollections--;
@@ -96,7 +115,7 @@ class Army implements Updateable implements MessageListener {
                     u.corpse = null;
                 }
             }
-            MessageManager.sendMessage(new TurnComplete());
+            TweenManager.singleton.add(new DelayedCallTween(() -> MessageManager.sendMessage(new TurnComplete()), -3, 0));
         } else {
             if (Std.isOfType(route[0], Graveyard)) {
                 for (_ in 0...RNGManager.rand.random(2) + 1)
@@ -155,11 +174,11 @@ class Army implements Updateable implements MessageListener {
         return route[route.length-1];
     }
 
-    function get_rangeLeft():Float {
+    function get_rangeLeft():Int {
         return range - route.length + 1;
     }
 
-    function get_range() {
+    function get_range() : Int {
         var num_zombs = 0;
         var num_skele = 0;
         for (u in units) {
@@ -167,15 +186,35 @@ class Army implements Updateable implements MessageListener {
             if (Std.isOfType(u, Zombie)) num_zombs++;
         }
         var zomb_thresholds = [1, 5, 10, 50, 100];
-        var zomb_bonus = [1, 2, 3, 4, 5];
+        var zomb_bonus = [0, 1, 2, 3, 4, 5];
         var skele_thresholds = [1, 3, 10, 30, 100];
-        var skele_bonus = [2, 4, 8, 16, 32];
+        var skele_bonus = [0, 2, 4, 8, 16, 32];
         var z_index = 0;
         var s_index = 0;
-        while (num_zombs > 0)
-            num_zombs -= zomb_thresholds[z_index++];
-        while (num_skele > 0)
-            num_skele -= skele_thresholds[s_index++];
+        while (num_zombs > 0) {
+            z_index++;
+            num_zombs -= zomb_thresholds[z_index];
+        }
+        while (num_skele > 0) {
+            s_index++;
+            num_skele -= skele_thresholds[s_index];
+        }
         return 2 + zomb_bonus[z_index] + skele_bonus[s_index];
+    }
+
+    public static function canReturnHomeFrom(r:Int, route: Array<Location>, l:Location) {
+        if (l.id == Location.hqID) return true;
+        if (route.length == 1) return true;
+        if (r <= 0)
+            return false;
+        // trace(l.neighbours);
+        var n_route = route.copy();
+        n_route.push(l);
+        for (n in l.neighbours) {
+            if (n.id == Location.hqID) return true;
+            if (route.contains(n)) continue;
+            if (canReturnHomeFrom(r-1, n_route, n)) return true;
+        }
+        return false;
     }
 }

@@ -23,6 +23,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
     public var graphics: Graphics;
     var mouseJoint: B2MouseJoint;
     var timeFetching = 0.0;
+    static public var cameraPos = new Vector2D();
 
     public function new(p: Object) {
         super();
@@ -46,7 +47,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 5000;
+        mouse_joint_definition.maxForce = 500;
         mouse_joint_definition.dampingRatio = 1;
         mouse_joint_definition.frequencyHz = 1;
         
@@ -104,5 +105,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
         } else 
             timeFetching = 0;
         mouseJoint.setTarget(destination);
+        cameraPos.x = graphics.x;
+        cameraPos.y = graphics.y;
     }
 }
