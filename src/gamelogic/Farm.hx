@@ -10,16 +10,14 @@ import utilities.MessageManager;
 
 class Farm extends Location {
  
-    public var graphics: Graphics;
     var peasants = new Array<Peasant>();
 
     public function new(p: Object, pos: Vector2D, i: Int, n: Array<Int>, m: Map) {
-        graphics = new Graphics(p);
+        super(p, i, n, m);
         position = pos;
         graphics.x = pos.x;
         graphics.y = pos.y;
         new Bitmap(hxd.Res.img.farm.toTile().center(), graphics);
-        super(graphics, i, n, m);
 
         for (_ in 0...RNGManager.rand.random(3)+1) {
             spawnPeasant();

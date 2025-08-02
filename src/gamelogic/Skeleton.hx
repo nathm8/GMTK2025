@@ -39,7 +39,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 0.5;
+        mouse_joint_definition.maxForce = 10;
         mouse_joint_definition.dampingRatio = 0.75;
         mouse_joint_definition.frequencyHz = 0.5;
         

@@ -68,6 +68,7 @@ class Map implements Updateable implements MessageListener {
             else
                 locations.push(new Graveyard(graphics, p, cell.id, cell.getNeighborIndexes(), this));
         }
+        for (l in locations) l.init();
     }
 
     public function update(dt: Float) {

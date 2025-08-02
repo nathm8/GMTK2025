@@ -13,19 +13,41 @@ class Location implements Updateable implements MessageListener {
     public var id: Int;
     public var position: Vector2D;
     public var highlight: Graphics;
+    public var roads: Graphics;
     public var targetSelected: Bitmap;
     public var selected = false;
+    public var highlightRoads(get,set): Bool;
+    public var graphics: Graphics;
 
     public var corpses = new Array<Corpse>();
 
-    public function new(p: Object, i: Int, n: Array<Int>, m: Map) {
+    public var neighbours = new Array<Location>();
+    public var neighbourIndices = new Array<Int>();
+    var map: Map;
+
+    public function new(p: Object, i: Int, ns: Array<Int>, m: Map) {
         id = i;
-        highlight = new Graphics(p);
-        new Bitmap(hxd.Res.img.target.toTile().center(), highlight);
+        neighbourIndices = ns;
+        map = m;
+        graphics = new Graphics(p);
+        highlight = new Graphics(graphics);
+        new Bitmap(hxd.Res.img.blur.toTile().center(), highlight);
         targetSelected = new Bitmap(hxd.Res.img.targetselected.toTile().center(), highlight);
         targetSelected.visible = false;
         highlight.visible = false;
         MessageManager.addListener(this);
+        roads = new Graphics(graphics);
+        roads.visible = false;
+    }
+    public function init() {
+        roads.x = -position.x;
+        roads.y = -position.y;
+        for (n in neighbourIndices)
+            neighbours.push(map.locations[n]);
+    }
+
+    function isNeighbour(n: Location) : Bool {
+        return neighbours.contains(n);
     }
 
     public function receiveMessage(msg:Message):Bool {
@@ -34,7 +56,8 @@ class Location implements Updateable implements MessageListener {
         if (Army.singleton.state == Idle && id != hqID) return false;
         if (Std.isOfType(msg, MouseMove)) {
             var params = cast(msg, MouseMove);
-            if (Army.singleton.rangeLeft == 0)
+            if ((!isNeighbour(Army.singleton.route[Army.singleton.route.length-1]) || Army.singleton.rangeLeft == 0) 
+                && !(Army.singleton.state == Idle && id == hqID))
                 return false;
             if (position.distanceTo(params.worldPosition) < 100)
                 highlight.visible = true || selected;
@@ -43,8 +66,6 @@ class Location implements Updateable implements MessageListener {
         }
         if (Std.isOfType(msg, MouseRelease)) {
             var params = cast(msg, MouseRelease);
-            if (!selected && position.distanceTo(Army.singleton.lastLocation.position) > Army.singleton.rangeLeft)
-                return false;
             if (position.distanceTo(params.worldPosition) < 100) {
                 if (selected) {
                     selected = false;
@@ -52,11 +73,11 @@ class Location implements Updateable implements MessageListener {
                     targetSelected.visible = false;
                     highlight.rotation = 0;
                     MessageManager.sendMessage(new LocationDeselected(this));
-                } else {
+                } else if (isNeighbour(Army.singleton.route[Army.singleton.route.length-1]) && Army.singleton.rangeLeft > 0 || (Army.singleton.state == Idle && id == hqID)){
                     selected = true;
                     highlight.visible = true;
                     highlight.rotation = Math.PI/4;
-                    targetSelected.visible = true;
+                    // targetSelected.visible = true;
                     if (id == hqID && Army.singleton.state == Idle) {
                         selected = false;
                         highlight.visible = false;
@@ -69,6 +90,7 @@ class Location implements Updateable implements MessageListener {
             selected = false;
             highlight.visible = false;
             targetSelected.visible = false;
+            highlightRoads = false;
         }
         return false;
     }
@@ -87,4 +109,26 @@ class Location implements Updateable implements MessageListener {
 	public function update(dt:Float) {
         for (c in corpses) c.update(dt);
     }
+
+    function set_highlightRoads(value:Bool):Bool {
+        roads.visible = value;
+        if (value == false) return false;
+        roads.clear();
+        for (n in neighbours) {
+            if (Army.canReturnHomeFrom(Army.singleton.rangeLeft-1, Army.singleton.route, n)) {
+                roads.lineStyle(10, 0x22AA22, 0.5);
+                roads.moveTo(position.x, position.y);
+                roads.lineTo(n.position.x, n.position.y);
+            } else {
+                roads.lineStyle(10, 0xAA2222, 0.5);
+                roads.moveTo(position.x, position.y);
+                roads.lineTo(n.position.x, n.position.y);
+            }
+        }
+        return true;
+    }
+
+	function get_highlightRoads():Bool {
+		return roads.visible;
+	}
 }
