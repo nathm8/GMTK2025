@@ -53,7 +53,13 @@ class Location implements Updateable implements MessageListener {
     }
 
     public function receiveMessage(msg:Message):Bool {
+        // init check
         if (Army.singleton == null) return false;
+        if (Std.isOfType(msg, EnemyDeath)) {
+            var e = cast(msg, EnemyDeath).enemy;
+            enemies.remove(e);
+        }
+        // movement checks
         if (Army.singleton.state == Battling || Army.singleton.state == Marching || Army.singleton.state == AwaitingPickup) return false;
         if (Army.singleton.state == Idle && id != hqID) return false;
         if (Std.isOfType(msg, MouseMove)) {

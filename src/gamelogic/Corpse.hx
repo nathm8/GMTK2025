@@ -105,7 +105,7 @@ class Corpse implements Updateable {
         TweenManager.singleton.add(new DelayedCallTween(destroy, -3, 0));
     }
 
-    function destroy() {
+    public function destroy() {
         MessageManager.sendMessage(new CorpseDestroyed(this));
         detach();
         graphics.remove();

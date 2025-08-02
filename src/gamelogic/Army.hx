@@ -1,5 +1,6 @@
 package gamelogic;
 
+import h3d.Vector;
 import utilities.Vector2D;
 import gamelogic.physics.PhysicalWorld.PHYSICSCALE;
 import graphics.TweenManager;
@@ -38,6 +39,8 @@ class Army implements Updateable implements MessageListener {
     public var corpses = new Array<Corpse>();
 
     var pendingCollections = 0;
+
+    public var defeats = 0;
     
     public function new(p: Object) {
         singleton = this;
@@ -102,7 +105,9 @@ class Army implements Updateable implements MessageListener {
                 units.push(new Skeleton(graphics, necromancer, params.corpse.body));
         }
         if (Std.isOfType(msg, UnitDeath)) {
+            trace("friendly death");
             var u = cast(msg, UnitDeath).unit;
+            trace("units",units.length);
             units.remove(u);
             if (u.corpse != null)
                 route[0].corpses.push(u.corpse);
@@ -110,14 +115,27 @@ class Army implements Updateable implements MessageListener {
             p *= PHYSICSCALE;
             route[0].generateCorpse(p, u);
             u.destroy();
-            // TODO, fade to black, record failed attempt
-            if (units.length == 0) {
+            // Defeat
+            if (units.length == 1) {
                 trace("defeat");
+                defeats++;
+                // TODO fade to black and back
+                for (e in route[0].enemies)
+                    e.state = Idle;
+                route = new Array<Location>();
+                route.push(HQTower.singleton);
+                var n = cast(units[0], Necromancer);
+                n.state = Idle;
+                if (n.corpse != null) {
+                    n.corpse = null;
+                    n.corpse.destroy();
+                }
+                state = Idle;
+                n.destination = new Vector2D();
             }
             // reshuffle combatants
             else if (state == Battling)
                 battle();
-            trace("friendly death");
             trace("enemies",route[0].enemies.length);
             trace("units",units.length);
         }
@@ -133,6 +151,7 @@ class Army implements Updateable implements MessageListener {
             // no enemies, advance
             if (route[0].enemies.length == 0) {
                 trace("victory");
+                state = AwaitingPickup;
             }
             trace("enemy death");
             trace("enemies",route[0].enemies.length);
@@ -192,8 +211,10 @@ class Army implements Updateable implements MessageListener {
         trace("army battling");
         state = Battling;
         var friendlies = units.copy();
+        trace("f", friendlies.length);
         RNGManager.rand.shuffle(friendlies);
         var enemies = route[0].enemies.copy();
+        trace("e", enemies.length);
         RNGManager.rand.shuffle(enemies);
 
         for (u in units) {

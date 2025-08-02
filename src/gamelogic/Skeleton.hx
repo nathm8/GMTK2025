@@ -84,12 +84,21 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
                 state = Idle;
             }
         } else if (state == Attacking) {
+            timeExecuting += dt;
             var v: Vector2D = body.getPosition();
-            v -= target.getPosition();
-            destination = target.getPosition() - v.normalize()*0.05;
+            v -= target.body.getPosition();
+            destination = target.body.getPosition() - v.normalize()*0.05;
+            if (timeExecuting > 5) {
+                target.hitpoints -= 0.01;
+            }
         } else 
             timeExecuting = 0;
         mouseJoint.setTarget(destination);
+    }
+
+    public override function attack(c: Combatant) {
+        super.attack(c);
+        timeExecuting = 0;
     }
 
     public function destroy() {
