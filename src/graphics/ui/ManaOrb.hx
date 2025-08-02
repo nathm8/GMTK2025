@@ -59,7 +59,7 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 
 	function lerpMana() {
 		var r = measurePercentages[Army.singleton.rangeLeft];
-		TweenManager.singleton.add(new MoveBounceTween(mana, {x:mana.x, y:mana.y}, {x:mana.x, y:(1-r)*190 + r*10}, 0, 1));
+		TweenManager.singleton.add(new MoveBounceTween(mana, {x:mana.x, y:mana.y}, {x:mana.x, y:(1-r)*190 + r*10}, 0, 0.5));
 	}
 
 	function calcMeasurements() {
