@@ -19,7 +19,7 @@ enum ArmyState {
 
 class Army implements Updateable implements MessageListener {
 
-    var range(get, null) = 1500;
+    var range(get, null) = 2;
     public var route = new Array<Location>();
     public var graphics: Graphics;
     public var footsteps: Graphics;
@@ -48,8 +48,8 @@ class Army implements Updateable implements MessageListener {
     public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, LocationSelected)) {
             var params = cast(msg, LocationSelected);
-            if (params.location.id == 0) {
-                if (state == Idle && params.location.id == 0)
+            if (params.location.id == Location.hqID) {
+                if (state == Idle && params.location.id == Location.hqID)
                     state = Planning;
                 else if (state == Planning) {
                     route.push(params.location);
@@ -63,7 +63,7 @@ class Army implements Updateable implements MessageListener {
         if (Std.isOfType(msg, LocationDeselected)) {
             var params = cast(msg, LocationDeselected);
             route.remove(params.location);
-            if (state == Planning && params.location.id == 0)
+            if (state == Planning && params.location.id == Location.hqID)
                 state = Idle;
         }
         if (Std.isOfType(msg, CorpsePickup)) {
@@ -131,9 +131,10 @@ class Army implements Updateable implements MessageListener {
         footsteps.remove();
         footsteps = new Graphics(graphics);
         if (state == Planning) {
-            graphics.beginFill(0xFF0000, 0.1);
-            graphics.drawCircle(lastLocation.position.x, lastLocation.position.y, rangeLeft);
-            graphics.endFill();
+            // TODO visualise neighbours
+            // graphics.beginFill(0xFF0000, 0.1);
+            // graphics.drawCircle(lastLocation.position.x, lastLocation.position.y, rangeLeft);
+            // graphics.endFill();
 
             var prev = route[0];
             for (i in 1...route.length) {
@@ -155,22 +156,26 @@ class Army implements Updateable implements MessageListener {
     }
 
     function get_rangeLeft():Float {
-        var c = 0.0;
-        var last = route[0];
-        for (l in route) {
-            c += last.position.distanceTo(l.position);
-            last = l;
-        }
-        return range - c;
+        return range - route.length + 1;
     }
 
     function get_range() {
         var num_zombs = 0;
-        var num_skellies = 0;
+        var num_skele = 0;
         for (u in units) {
-            if (Std.isOfType(u, Skeleton)) num_skellies++;
+            if (Std.isOfType(u, Skeleton)) num_skele++;
             if (Std.isOfType(u, Zombie)) num_zombs++;
         }
-        return 1000 + 100*num_zombs + 200*num_skellies;
+        var zomb_thresholds = [1, 5, 10, 50, 100];
+        var zomb_bonus = [1, 2, 3, 4, 5];
+        var skele_thresholds = [1, 3, 10, 30, 100];
+        var skele_bonus = [2, 4, 8, 16, 32];
+        var z_index = 0;
+        var s_index = 0;
+        while (num_zombs > 0)
+            num_zombs -= zomb_thresholds[z_index++];
+        while (num_skele > 0)
+            num_skele -= skele_thresholds[s_index++];
+        return 2 + zomb_bonus[z_index] + skele_bonus[s_index];
     }
 }

@@ -18,6 +18,7 @@ class HQTower extends Location {
 	}
     
     public function new(p: Object, i: Int, n: Array<Int>, m: Map) {
+        Location.hqID = i;
         singleton = this;
         graphics = new Graphics(p);
         position = new Vector2D();

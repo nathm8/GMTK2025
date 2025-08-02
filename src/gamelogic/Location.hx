@@ -9,7 +9,7 @@ import h2d.Object;
 import utilities.MessageManager;
 
 class Location implements Updateable implements MessageListener {
-    static var maxID = 0;
+    public static var hqID = 0;
     public var id: Int;
     public var position: Vector2D;
     public var highlight: Graphics;
@@ -31,10 +31,10 @@ class Location implements Updateable implements MessageListener {
     public function receiveMessage(msg:Message):Bool {
         if (Army.singleton == null) return false;
         if (Army.singleton.state == Marching || Army.singleton.state == AwaitingPickup) return false;
-        if (Army.singleton.state == Idle && id != 0) return false;
+        if (Army.singleton.state == Idle && id != hqID) return false;
         if (Std.isOfType(msg, MouseMove)) {
             var params = cast(msg, MouseMove);
-            if (position.distanceTo(Army.singleton.lastLocation.position) > Army.singleton.rangeLeft)
+            if (Army.singleton.rangeLeft == 0)
                 return false;
             if (position.distanceTo(params.worldPosition) < 100)
                 highlight.visible = true || selected;
@@ -57,7 +57,7 @@ class Location implements Updateable implements MessageListener {
                     highlight.visible = true;
                     highlight.rotation = Math.PI/4;
                     targetSelected.visible = true;
-                    if (id == 0 && Army.singleton.state == Idle) {
+                    if (id == hqID && Army.singleton.state == Idle) {
                         selected = false;
                         highlight.visible = false;
                     }

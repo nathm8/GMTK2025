@@ -17,9 +17,9 @@ class Map implements Updateable implements MessageListener {
     public var graphics: Graphics;
     public var locations = new Array<Location>();
 
-    final LOCATIONS = 100;
-    final WIDTH     = 5000;
-    final HEIGHT    = 5000;
+    final LOCATIONS = 50;
+    final WIDTH     = 3000;
+    final HEIGHT    = 3000;
 
     public function receiveMessage(msg:Message):Bool {
 		return false;
@@ -53,7 +53,7 @@ class Map implements Updateable implements MessageListener {
 
         for (cell in diagram.cells) {
             for (n in cell.getNeighbors()){
-                graphics.lineStyle(10, 0xAAAAAA);
+                graphics.lineStyle(10, 0xAAAAAA, 0.25);
                 graphics.moveTo(cell.point.x, cell.point.y);
                 graphics.lineTo(n.x, n.y);
             }
