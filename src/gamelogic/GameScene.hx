@@ -88,8 +88,8 @@ class GameScene extends Scene implements MessageListener {
 			centre = lastMousePos;
 		}
 		if ((pos - centre).magnitude > 50) {
-			camera.x = centre.x*0.05 + camera.x*0.95;
-			camera.y = centre.y*0.05 + camera.y*0.95;
+			camera.x = centre.x*0.025 + camera.x*0.975;
+			camera.y = centre.y*0.025 + camera.y*0.975;
 		}
 	}
 

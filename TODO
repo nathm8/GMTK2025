@@ -3,6 +3,11 @@ MVP
 Combat
     - assign targets to each unit randomly, fling as per corpse pickup
 
+    
+BUGS
+-------
+Peasants spawning at 0, 0 for some reason
+
 Juice
 -------
 if the mouse is closer to the tower than the random magnitude when idling, have the necromancer go to the mouse instead
