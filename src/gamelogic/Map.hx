@@ -67,7 +67,8 @@ class Map implements Updateable implements MessageListener {
         var diagram = voronoi.compute(points, Bounds.fromValues(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT));
 
         for (tri in Delaunay.triangulate(points)) {
-            trace(tri);
+            if (RNGManager.rand.random(3) == 0)
+                continue;
             var p:Vector2D = tri.p1 + tri.p2 + tri.p3;
             p /= 3;
             var bmp: Bitmap = null;
@@ -84,11 +85,11 @@ class Map implements Updateable implements MessageListener {
                 bmp = new Bitmap(hxd.Res.img.forest5.toTile().center(), graphics);
             if (i == 5)
                 bmp = new Bitmap(hxd.Res.img.forest6.toTile().center(), graphics);
-            bmp.scale(1.5);
+            bmp.scale(2);
             bmp.x = p.x;
             bmp.y = p.y;
             if (RNGManager.rand.random(2) == 0)
-                bmp.scaleX = -1;
+                bmp.scaleX = -2;
         }
 
         for (cell in diagram.cells) {
