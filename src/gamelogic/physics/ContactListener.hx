@@ -22,9 +22,6 @@ class ContactListener extends B2ContactListener {
                             c.attachToBody(u.body);
                             MessageManager.sendMessage(new CorpsePickup());
                             u.state = Idle;
-                            // ugly hack, bad OOP, bad programmer
-                            if (Std.isOfType(u, Necromancer))
-                                u.state = Moving;
                         }
                     }
                 }

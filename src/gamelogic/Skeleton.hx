@@ -17,6 +17,7 @@ import utilities.MessageManager;
 class Skeleton extends Unit implements MessageListener implements DestinationDirectable {
  
     public var graphics: Graphics;
+    var hitpointIndicator: Bitmap;
     var mouseJoint: B2MouseJoint;
     var necromancer: Necromancer;
     var totalTime = 0.0;
@@ -31,46 +32,49 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         destination = new Vector2D();
         necromancer = n;
         new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
+        hitpointIndicator = new Bitmap(hxd.Res.img.unitmask.toTile().center(), graphics);
+        hitpointIndicator.alpha = 0;
 
         body = b;
         body.getFixtureList().setDensity(0.75);
+        body.resetMassData();
         body.getFixtureList().setUserData(this);
+        body.setLinearDamping(0.5);
 
         var mouse_joint_definition = new B2MouseJointDef();
         mouse_joint_definition.bodyA = new CircularPhysicalGameObject(new Vector2D(), PHYSICSCALEINVERT, 0).body;
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
-        mouse_joint_definition.target = destination;
+        mouse_joint_definition.target = body.getPosition();
         mouse_joint_definition.maxForce = 10;
-        mouse_joint_definition.dampingRatio = 0.75;
+        mouse_joint_definition.dampingRatio = 0.5;
         mouse_joint_definition.frequencyHz = 0.75;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
     }
 
     public function receiveMessage(msg:Message):Bool {
-        if (Std.isOfType(msg, UnitDeath)) {
-            var u = cast(msg, UnitDeath).unit;
-            if (u == this)
-                graphics.rotation = Math.PI/2;
-            state = Dead;
-        }
         return false;
     }
     
     public override function update(dt: Float) {
-        if (state == Dead) return;
         super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
+        hitpointIndicator.alpha = 1 - (hitpoints / 2.0);
+        hitpointIndicator.alpha > 0.9 ? hitpointIndicator.alpha = 0.9 : null;
+        if (state == Dead) return;
 
         if (state == Idle) {
             totalTime += dt*RNGManager.rand.rand();
             if (totalTime > 0.05) {
                 totalTime = 0;
-                var d = necromancer.body.getPosition();
-                d.x += (RNGManager.rand.rand()-0.5)/12;
-                d.y += (RNGManager.rand.rand()-0.5)/12;
+                var m = 1.0;
+                // if (Army.singleton.units.length > 20)
+                //     m += Math.pow(Army.singleton.units.length, 0.25);
+                var d: Vector2D = necromancer.body.getPosition();
+                d.x += (RNGManager.rand.rand()-0.5)/12*m;
+                d.y += (RNGManager.rand.rand()-0.5)/12*m;
                 destination = d;
             }
         } else if (state == FetchingCorpse) {
@@ -84,12 +88,24 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
                 state = Idle;
             }
         } else if (state == Attacking) {
+            timeExecuting += dt;
             var v: Vector2D = body.getPosition();
-            v -= target.getPosition();
-            destination = target.getPosition() - v.normalize()*0.05;
+            v -= target.body.getPosition();
+            var r = new Vector2D(RNGManager.rand.rand()-0.5, RNGManager.rand.rand()-0.5) * 0.1;
+            destination = target.body.getPosition() - v.normalize()*0.1 + r;
+            if (timeExecuting > 5) {
+                trace("skele taking too long, magic attack");
+                target.hitpoints -= 0.01;
+                hitpoints -= 0.01;
+            }
         } else 
             timeExecuting = 0;
         mouseJoint.setTarget(destination);
+    }
+
+    public override function attack(c: Combatant) {
+        super.attack(c);
+        timeExecuting = 0;
     }
 
     public function destroy() {

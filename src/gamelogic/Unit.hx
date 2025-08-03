@@ -26,7 +26,7 @@ abstract class Unit implements Updateable implements DestinationDirectable imple
 	public var hitpoints(default, set):Float;
 	public var isUndead:Bool=true;
 	public var body:B2Body;
-	public var target:B2Body;
+	public var target:Combatant;
 	public var resurrectionCount: Int;
 	public var corpseType:CorpseType;
 
@@ -45,10 +45,9 @@ abstract class Unit implements Updateable implements DestinationDirectable imple
     }
 
     function set_hitpoints(value:Float):Float {
-        trace("undead damaged");
         if (value <= 0) {
-            trace("undead died");
             MessageManager.sendMessage(new UnitDeath(this));
+            state = Dead;
         }
         hitpoints = value;
         return value;
@@ -56,7 +55,7 @@ abstract class Unit implements Updateable implements DestinationDirectable imple
 
     public function attack(c: Combatant) {
         state = Attacking;
-        target = c.body;
+        target = c;
         destination = c.body.getPosition();
     }
 

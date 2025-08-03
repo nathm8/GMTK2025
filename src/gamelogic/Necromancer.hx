@@ -39,6 +39,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
         var fixture_definition = new B2FixtureDef();
         fixture_definition.shape = circle;
         fixture_definition.userData = this;
+        fixture_definition.density = 5000;
         body = PhysicalWorld.gameWorld.createBody(body_definition);
         body.createFixture(fixture_definition);
 
@@ -47,18 +48,19 @@ class Necromancer extends Unit implements MessageListener implements Destination
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 50;
-        mouse_joint_definition.dampingRatio = 0.9;
-        mouse_joint_definition.frequencyHz = 0.9;
+        mouse_joint_definition.maxForce = 500000;
+        mouse_joint_definition.dampingRatio = 1.0;
+        mouse_joint_definition.frequencyHz = 1.0;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
     }
 
     public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, MouseMove)) {
-            if (state == Idle) {
+            if (state == Idle || state == Attacking) {
                 var params = cast(msg, MouseMove);
-                destination = params.worldPosition.normalize()*(RNGManager.rand.random(50)+50);
+                var p = Army.singleton.route[0].position;
+                destination = p + (params.worldPosition - p).normalize()*(RNGManager.rand.random(50)+50);
                 destination *= PHYSICSCALEINVERT;
             }
         }
@@ -95,12 +97,12 @@ class Necromancer extends Unit implements MessageListener implements Destination
         if (state == FetchingCorpse) {
             var cp: Vector2D = body.getPosition();
             cp -= corpse.body.getPosition();
-            destination = corpse.body.getPosition() - cp.normalize()*0.5;
+            destination = corpse.body.getPosition() - cp.normalize()*0.1;
             timeFetching += dt;
             if (timeFetching > 1) {
                 corpse.attachToBody(body);
                 MessageManager.sendMessage(new CorpsePickup());
-                state = Moving;
+                state = Idle;
             }
         } else 
             timeFetching = 0;
@@ -111,5 +113,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
 
     public function destroy() {}
 
-    public override function attack(c: Combatant) {}
+    public override function attack(c: Combatant) {
+        state = Attacking;
+    }
 }

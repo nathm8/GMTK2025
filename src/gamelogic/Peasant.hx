@@ -21,28 +21,25 @@ import h2d.Bitmap;
 import utilities.Vector2D;
 import utilities.MessageManager;
 
-class Peasant implements Enemy implements MessageListener implements DestinationDirectable implements Combatant {
+class Peasant extends Enemy implements MessageListener implements DestinationDirectable implements Combatant {
  
     public var graphics: Graphics;
     var mouseJoint: B2MouseJoint;
 	public var destination:Vector2D;
-    public var body: B2Body;
-    public var state = Idle;
     var totalTime = 0.0;
     var location: Location;
-	public var hitpoints(default, set):Float;
-	public var isUndead = false;
-	public var target:B2Body;
-	public var resurrectionCount = 0;
-	public var corpseType:CorpseType;
+    var hitpointIndicator: Bitmap;
 
     public function new(p: Object, l: Location) {
+        super();
         hitpoints = 1;
         totalTime = RNGManager.rand.rand();
         location = l;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         new Bitmap(hxd.Res.img.peasant.toTile().center(), graphics);
+        hitpointIndicator = new Bitmap(hxd.Res.img.peasantmask.toTile().center(), graphics);
+        hitpointIndicator.alpha = 0;
 
         corpseType = PeasantCorpse;
         
@@ -69,15 +66,21 @@ class Peasant implements Enemy implements MessageListener implements Destination
         mouse_joint_definition.frequencyHz = 0.1;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
+        state = Idle;
     }
 
     public function receiveMessage(msg:Message):Bool {
+        if (Std.isOfType(msg, LostBattle)) {
+            state = Idle;
+        }
         return false;
     }
     
     public function update(dt: Float) {
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
+        hitpointIndicator.alpha = 1 - (hitpoints / 1.0);
+        hitpointIndicator.alpha > 0.9 ? hitpointIndicator.alpha = 0.9 : null;
 
         if (state == Idle) {
             totalTime += dt;
@@ -92,16 +95,18 @@ class Peasant implements Enemy implements MessageListener implements Destination
 
     public function attack(c:Combatant) {
         state = Attacking;
-        target = c.body;
+        target = c;
         destination = c.body.getPosition();
     }
 
-    public function set_hitpoints(value:Float):Float {
-        trace("peasant damaged");
+    public override function destroy() {
+        graphics.remove();
+        PhysicalWorld.gameWorld.destroyJoint(mouseJoint);
+    }
+
+    public override function set_hitpoints(value:Float):Float {
         if (value <= 0) {
             state = Dead;
-            trace("peasant died");
-            graphics.rotation = Math.PI/2;
             MessageManager.sendMessage(new EnemyDeath(this));
         }
         hitpoints = value;

@@ -1,5 +1,12 @@
 package gamelogic;
 
+import gamelogic.physics.PhysicalWorld;
+import box2D.dynamics.B2FixtureDef;
+import box2D.collision.shapes.B2CircleShape;
+import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
+import box2D.dynamics.B2BodyType;
+import box2D.dynamics.B2BodyDef;
+import h3d.Vector;
 import utilities.Vector2D;
 import gamelogic.physics.PhysicalWorld.PHYSICSCALE;
 import graphics.TweenManager;
@@ -38,6 +45,16 @@ class Army implements Updateable implements MessageListener {
     public var corpses = new Array<Corpse>();
 
     var pendingCollections = 0;
+
+    public var totalTime = 0.0;
+    public var rerezz = 0;
+    public var longestPath = 0;
+    public var kills = 0;
+    public var losses = 0;
+    public var resurrections = 0;
+    public var turns = 0;
+    public var defeats = 0;
+    public var victoryFlag = false;
     
     public function new(p: Object) {
         singleton = this;
@@ -48,9 +65,48 @@ class Army implements Updateable implements MessageListener {
         route.push(HQTower.singleton);
         necromancer = new Necromancer(graphics);
         units.push(necromancer);
+        // DEBUG
+        //  for (_ in 0...200) {
+        //     var body_definition = new B2BodyDef();
+        //     body_definition.type = B2BodyType.DYNAMIC_BODY;
+        //     body_definition.position = new Vector2D();
+        //     body_definition.linearDamping = 1;
+        //     var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+        //     var fixture_definition = new B2FixtureDef();
+        //     fixture_definition.shape = circle;
+        //     fixture_definition.userData = this;
+        //     fixture_definition.density = 10;
+        //     var body = PhysicalWorld.gameWorld.createBody(body_definition);
+        //     body.createFixture(fixture_definition);
+        //     units.push(new Skeleton(graphics, necromancer, body));
+        //  }
+        //  for (_ in 0...200) {
+        //     var body_definition = new B2BodyDef();
+        //     body_definition.type = B2BodyType.DYNAMIC_BODY;
+        //     body_definition.position = new Vector2D();
+        //     body_definition.linearDamping = 1;
+        //     var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+        //     var fixture_definition = new B2FixtureDef();
+        //     fixture_definition.shape = circle;
+        //     fixture_definition.userData = this;
+        //     fixture_definition.density = 10;
+        //     var body = PhysicalWorld.gameWorld.createBody(body_definition);
+        //     body.createFixture(fixture_definition);
+
+        //     units.push(new Zombie(graphics, necromancer, body));
+        // }
     }
 
     public function receiveMessage(msg:Message):Bool {
+        if (Std.isOfType(msg, TurnComplete)) {
+            turns++;
+            state = Idle;
+            necromancer.state = Idle;
+            // trace("turn complete");
+            if (victoryFlag) {
+                MessageManager.sendMessage(new Victory());
+            }
+        }
         if (Std.isOfType(msg, LocationSelected)) {
             var params = cast(msg, LocationSelected);
             for (l in route) l.highlightRoads = false;
@@ -95,58 +151,52 @@ class Army implements Updateable implements MessageListener {
             corpses.remove(params.corpse);
         }
         if (Std.isOfType(msg, NewUnit)) {
+            resurrections++;
             var params = cast(msg, NewUnit);
             if (params.corpse.type == ZombieCorpse)
                 units.push(new Zombie(graphics, necromancer, params.corpse.body));
             else if (params.corpse.type == SkeletonCorpse)
                 units.push(new Skeleton(graphics, necromancer, params.corpse.body));
+            else if (params.corpse.type == PeasantCorpse)
+                units.push(new Zombie(graphics, necromancer, params.corpse.body, true));
         }
         if (Std.isOfType(msg, UnitDeath)) {
+            losses++;
+            // trace("friendly death");
+            // trace("enemies",route[0].enemies.length);
+            // trace("units",units.length);
+            // cancel any pending corpse pickups
+            pendingCollections = 0;
             var u = cast(msg, UnitDeath).unit;
             units.remove(u);
             if (u.corpse != null)
                 route[0].corpses.push(u.corpse);
             var p: Vector2D = u.body.getPosition();
             p *= PHYSICSCALE;
-            route[0].generateCorpse(p, u);
             u.destroy();
-            // TODO, fade to black, record failed attempt
-            if (units.length == 0) {
-                trace("defeat");
-            }
-            // reshuffle combatants
-            else if (state == Battling)
-                battle();
-            trace("friendly death");
-            trace("enemies",route[0].enemies.length);
-            trace("units",units.length);
-        }
-        if (Std.isOfType(msg, EnemyDeath)) {
-            var e = cast(msg, EnemyDeath).enemy;
-            // create corpse
-            var p: Vector2D = e.body.getPosition();
-            p *= PHYSICSCALE;
-            route[0].generateCorpse(p, e);
+            route[0].generateCorpse(p, u);
             // reshuffle combatants
             if (state == Battling)
                 battle();
-            // no enemies, advance
-            if (route[0].enemies.length == 0) {
-                trace("victory");
-            }
-            trace("enemy death");
-            trace("enemies",route[0].enemies.length);
-            trace("units",units.length);
+        }
+        if (Std.isOfType(msg, EnemyDeath)) {
+            kills++;
+            trace(kills);
+            // trace("enemy death");
+            // trace("enemies",route[0].enemies.length);
+            // trace("units",units.length);
+            // reshuffle combatants
+            if (state == Battling)
+                battle();
         }
         return false;
     }
 
     public function progress() {
+        if (route.length > longestPath) longestPath = route.length;
         route.remove(route[0]);
         if (route.length == 1) {
             // assume it must be the tower
-            state = Idle;
-            necromancer.state = Idle;
             for (u in units) {
                 if (u.corpse != null) {
                     u.corpse.resurrect();
@@ -186,16 +236,51 @@ class Army implements Updateable implements MessageListener {
                 pendingCollections++;
             }
         }
+        // trace("collection corpses", pendingCollections);
     }
 
     function battle() {
-        trace("army battling");
+        // trace("army battling");
+        // Defeat
+        if (units.length == 1) {
+            // trace("defeat");
+            MessageManager.sendMessage(new LostBattle());
+            TweenManager.singleton.add(new DelayedCallTween( () -> MessageManager.sendMessage(new TurnComplete()), -5, 0));
+            defeats++;
+            // TODO fade to black and back
+            if (necromancer.corpse != null) {
+                route[0].corpses.push(necromancer.corpse);
+                necromancer.corpse.detach();
+                necromancer.corpse = null;
+            }
+            route = new Array<Location>();
+            route.push(HQTower.singleton);
+            necromancer.state = Idle;
+            state = Idle;
+            necromancer.destination = new Vector2D();
+            return;
+        }
+        // Victory
+        if (route[0].enemies.length == 0) {
+            trace("victory");
+            if (Std.isOfType(route[0], Castle)) {
+                victoryFlag = true;
+                trace("victory flag set");
+            }
+            // trace("victory");
+            for (u in units)
+                u.state = Idle;
+            collectCorpses();
+            return;
+        }
         state = Battling;
         var friendlies = units.copy();
+        friendlies.remove(necromancer);
+        // trace("f", friendlies.length);
         RNGManager.rand.shuffle(friendlies);
         var enemies = route[0].enemies.copy();
+        // trace("e", enemies.length);
         RNGManager.rand.shuffle(enemies);
-
         for (u in units) {
             if (enemies.length == 0) {
                 enemies = route[0].enemies.copy();
@@ -204,7 +289,6 @@ class Army implements Updateable implements MessageListener {
             var e = enemies.pop();
             u.attack(e);
         }
-
         for (e in enemies) {
             if (friendlies.length == 0) {
                 friendlies = units.copy();
@@ -216,6 +300,7 @@ class Army implements Updateable implements MessageListener {
     }
 
     public function update(dt:Float) {
+        totalTime += dt;
         graphics.clear();
         footsteps.remove();
         footsteps = new Graphics(graphics);
@@ -253,7 +338,7 @@ class Army implements Updateable implements MessageListener {
         var zomb_thresholds = [1, 5, 10, 50, 100];
         var zomb_bonus = [0, 1, 2, 3, 4, 5];
         var skele_thresholds = [1, 3, 10, 30, 100];
-        var skele_bonus = [0, 2, 4, 8, 16, 32];
+        var skele_bonus = [0, 2, 4, 6, 8, 10];
         var z_index = 0;
         var s_index = 0;
         while (num_zombs > 0) {

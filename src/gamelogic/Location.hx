@@ -1,5 +1,7 @@
 package gamelogic;
 
+import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
+import gamelogic.physics.PhysicalWorld.PHYSICSCALE;
 import box2D.dynamics.B2Body;
 import gamelogic.Corpse;
 import h2d.Bitmap;
@@ -53,7 +55,18 @@ class Location implements Updateable implements MessageListener {
     }
 
     public function receiveMessage(msg:Message):Bool {
+        // init check
         if (Army.singleton == null) return false;
+        if (Std.isOfType(msg, EnemyDeath)) {
+            var e = cast(msg, EnemyDeath).enemy;
+            if (enemies.contains(e)) {
+                enemies.remove(e);
+                var p: Vector2D = e.body.getPosition();
+                generateCorpse(p*PHYSICSCALE, e);
+                e.destroy();
+            }
+        }
+        // movement checks
         if (Army.singleton.state == Battling || Army.singleton.state == Marching || Army.singleton.state == AwaitingPickup) return false;
         if (Army.singleton.state == Idle && id != hqID) return false;
         if (Std.isOfType(msg, MouseMove)) {
@@ -120,11 +133,19 @@ class Location implements Updateable implements MessageListener {
         }
         if (pos == null)
             pos = position + new Vector2D(RNGManager.rand.random(200)-100, RNGManager.rand.random(200)-100);
-        corpses.push(new Corpse(highlight.parent.parent, pos, t, b, rc));
+        corpses.insert(0, new Corpse(highlight.parent.parent, pos, t, b, rc));
     }
 
 	public function update(dt:Float) {
-        for (c in corpses) c.update(dt);
+        for (c in corpses) {
+            var p: Vector2D = c.body.getPosition();
+            p *= PHYSICSCALE;
+            var delta = position - p;
+            // move corpses closer to location if they're far out
+            if (delta.magnitude > 50) 
+                c.body.applyForce(10000*dt*delta.normalize()*PHYSICSCALEINVERT, c.body.getPosition());
+            c.update(dt);
+        }
     }
 
     function set_highlightRoads(value:Bool):Bool {

@@ -32,6 +32,7 @@ class Corpse implements Updateable {
     var mask: Bitmap;
     public var joint: B2Joint;
     var resurrectionCount = 0;
+    var resurrecting = false;
     // var distanceJoint: B2DistanceJoint;
 
     public function new(p: Object, pos: Vector2D, t: CorpseType, b:B2Body, rez_count=0) {
@@ -43,7 +44,7 @@ class Corpse implements Updateable {
         else if (t == SkeletonCorpse)
             sprite = new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
         else if (t == PeasantCorpse)
-            sprite = new Bitmap(hxd.Res.img.peasant.toTile().center(), graphics);
+            sprite = new Bitmap(hxd.Res.img.peasantzomb.toTile().center(), graphics);
         if (t == ZombieCorpse || t == SkeletonCorpse)
             mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
         else
@@ -60,28 +61,38 @@ class Corpse implements Updateable {
             var body_definition = new B2BodyDef();
             body_definition.type = B2BodyType.DYNAMIC_BODY;
             body_definition.position = pos*PHYSICSCALEINVERT;
-            body_definition.linearDamping = 0.25;
+            body_definition.linearDamping = 1;
             var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
             var fixture_definition = new B2FixtureDef();
             fixture_definition.shape = circle;
             fixture_definition.userData = this;
-            fixture_definition.density = 0.00001;
+            fixture_definition.density = 50000;
             body = PhysicalWorld.gameWorld.createBody(body_definition);
             body.createFixture(fixture_definition);
-        } else
+        } else {
             body = b;
+            body.getFixtureList().setDensity(50000);
+            body.resetMassData();
+            body.getFixtureList().setUserData(this);
+            body.setLinearDamping(1.0);
+        }
 
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
     }
     
     public function detach() {
-        if (joint != null)
+        if (joint != null) {
+            body.getFixtureList().setDensity(50000);
+            body.resetMassData();
             PhysicalWorld.gameWorld.destroyJoint(joint);
+        }
     }
 
     public function attachToBody(b: B2Body) {
         detach();
+        body.getFixtureList().setDensity(0.001);
+        body.resetMassData();
         var d: Vector2D = b.getPosition();
         d -= body.getPosition();
         var distance_joint_definition = new B2DistanceJointDef();
@@ -93,21 +104,25 @@ class Corpse implements Updateable {
     }
 
     public function update(dt:Float) {
+        var v: Vector2D = body.getPosition();
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
     }
 
     public function resurrect() {
+        detach();
+        resurrecting = true;
         TweenManager.singleton.add(new FadeOutTween(mask, 0, 2));
         TweenManager.singleton.add(new ScaleBounceTween(sprite, 0, 3));
         TweenManager.singleton.add(new RotateTween(sprite, Math.PI/2, 0, 0, 1));
         TweenManager.singleton.add(new DelayedCallTween(() -> MessageManager.sendMessage(new NewUnit(this)), -3, 0));
         TweenManager.singleton.add(new DelayedCallTween(destroy, -3, 0));
+        TweenManager.singleton.add(new DelayedCallTween(() -> resurrecting = false, -3, 0));
     }
 
-    function destroy() {
-        MessageManager.sendMessage(new CorpseDestroyed(this));
+    public function destroy() {
         detach();
         graphics.remove();
+        MessageManager.sendMessage(new CorpseDestroyed(this));
     }
 }
