@@ -1,12 +1,12 @@
 MVP
 -------
-fade in\out for defeat
 castle, knights, victory screen
 
 BUGS
 -------
 FIXED
     Peasants spawning at 0, 0 for some reason
+Physics stress test
 
 Art
 -------
@@ -51,3 +51,4 @@ Before forcing the corpse-unit joint, lerp the corpse towards the unit for a sec
 for clarity, add an "attraction field" to gather corpses to their respective location, if they're knocked too far away from it.
     - could be an upgrade\spell, have corpses knocked too far fade out and be deleted otherwise
     
+fade in\out for defeat

@@ -213,6 +213,7 @@ class Army implements Updateable implements MessageListener {
         if (units.length == 1) {
             // trace("defeat");
             MessageManager.sendMessage(new LostBattle());
+            TweenManager.singleton.add(new DelayedCallTween( () -> MessageManager.sendMessage(new TurnComplete()), -5, 0));
             defeats++;
             // TODO fade to black and back
             if (necromancer.corpse != null) {
