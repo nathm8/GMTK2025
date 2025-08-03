@@ -78,8 +78,8 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
     public function update(dt: Float) {
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
-        hitpointIndicator.alpha = 1 - (hitpoints / 2.0);
-        hitpointIndicator.alpha < .1 ? hitpointIndicator.alpha = .1 : null;
+        hitpointIndicator.alpha = 1 - (hitpoints / 1.0);
+        hitpointIndicator.alpha > 0.9 ? hitpointIndicator.alpha = 0.9 : null;
 
         if (state == Idle) {
             totalTime += dt;

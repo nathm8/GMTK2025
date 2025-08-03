@@ -141,9 +141,9 @@ class Location implements Updateable implements MessageListener {
             var p: Vector2D = c.body.getPosition();
             p *= PHYSICSCALE;
             var delta = position - p;
-            // move corpses closer to location if they're far out            
-            if (delta.magnitude > 50)
-                c.body.applyForce(10*dt*delta.normalize()*PHYSICSCALEINVERT, c.body.getPosition());
+            // move corpses closer to location if they're far out
+            if (delta.magnitude > 50) 
+                c.body.applyForce(10000*dt*delta.normalize()*PHYSICSCALEINVERT, c.body.getPosition());
             c.update(dt);
         }
     }

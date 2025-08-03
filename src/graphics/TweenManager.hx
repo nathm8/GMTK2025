@@ -241,8 +241,8 @@ class FadeOutTween extends Tween {
 		if (t < 0.5)
 			t = 0;
 		obj.alpha = 1-t;
-		if (t == 1)
-			obj.remove();
+		// if (t == 1)
+		// 	obj.remove();
 	}
 }
 

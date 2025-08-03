@@ -58,7 +58,7 @@ class Army implements Updateable implements MessageListener {
         necromancer = new Necromancer(graphics);
         units.push(necromancer);
         // DEBUG
-        //  for (_ in 0...5) {
+        //  for (_ in 0...2) {
         //     var body_definition = new B2BodyDef();
         //     body_definition.type = B2BodyType.DYNAMIC_BODY;
         //     body_definition.position = new Vector2D();

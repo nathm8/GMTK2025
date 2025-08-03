@@ -1,34 +1,30 @@
 MVP
 -------
-Combat
-    - assign targets to each unit randomly, fling as per corpse pickup
+fade in\out for defeat
+castle, knights, victory screen
 
-    
 BUGS
 -------
-Peasants spawning at 0, 0 for some reason
+FIXED
+    Peasants spawning at 0, 0 for some reason
+
+Art
+-------
+resize to 720p
+show goals on scroll
 
 Juice
 -------
 if the mouse is closer to the tower than the random magnitude when idling, have the necromancer go to the mouse instead
 
 red mask for combatants, to match their damage
+    did black
 
 Physics
 -------
-for clarity, add an "attraction field" to gather corpses to their respective location, if they're knocked too far away from it.
-    - could be an upgrade\spell, have corpses knocked too far fade out and be deleted otherwise
-
-Before forcing the corpse-unit joint, lerp the corpse towards the unit for a second
-
-Necro lunge is from corpse spawning on top of it, do a check to make sure corpses don't spawn on top of other bodies
 
 UI
 -------
-show error when unable to go further
-
-show road ghosts when hovering
-
 wip tutorial text:
     You are a necromancer! you must tour the countryside, building up your legion of undead Minions. You must begin and end each day at your Tower. Click the tower, then click a Location to add it to your route. Initially you can only venture one Location away from your Tower, as you gather more Minions you may travel further. Locations that will allow you to return to your Tower are marked with Green paths
 
@@ -43,4 +39,15 @@ Unit with the Highest Number of Resurrections
 Done
 -------
 have glow for mousing over locations, instead of target reticle
+Combat
+    - assign targets to each unit randomly, fling as per corpse pickup
 have different glow for locations in range of current planned stop
+show road ghosts when hovering
+show error when unable to go further
+Necro lunge is from corpse spawning on top of it, do a check to make sure corpses don't spawn on top of other bodies
+    just increased corpse density
+Before forcing the corpse-unit joint, lerp the corpse towards the unit for a second
+    just increased corpse density
+for clarity, add an "attraction field" to gather corpses to their respective location, if they're knocked too far away from it.
+    - could be an upgrade\spell, have corpses knocked too far fade out and be deleted otherwise
+    
