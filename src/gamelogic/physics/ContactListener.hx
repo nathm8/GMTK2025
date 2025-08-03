@@ -45,8 +45,8 @@ class ContactListener extends B2ContactListener {
                 return;
             if (a.hitpoints <= 0 || b.hitpoints <= 0)
                 return;
-            a.hitpoints -= 0.1;
-            b.hitpoints -= 0.1;
+            a.hitpoints -= 0.01;
+            b.hitpoints -= 0.01;
         }
 
         combatCheck(object_b, object_a);

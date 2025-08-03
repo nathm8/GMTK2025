@@ -46,8 +46,8 @@ abstract class Unit implements Updateable implements DestinationDirectable imple
 
     function set_hitpoints(value:Float):Float {
         if (value <= 0) {
-            corpse?.destroy();
             MessageManager.sendMessage(new UnitDeath(this));
+            state = Dead;
         }
         hitpoints = value;
         return value;

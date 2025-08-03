@@ -23,7 +23,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     var totalTime = 0.0;
     var timeExecuting = 0.0;
 
-    public function new(p: Object, n: Necromancer, b: B2Body) {
+    public function new(p: Object, n: Necromancer, b: B2Body, isPeasant=false) {
         super();
         hitpoints = 1;
         corpseType = ZombieCorpse;
@@ -31,11 +31,15 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         graphics = new Graphics(p);
         destination = new Vector2D();
         necromancer = n;
-        new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
+        if  (!isPeasant)
+            new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
+        else
+            new Bitmap(hxd.Res.img.peasantzomb.toTile().center(), graphics);
 
         body = b;
         body.getFixtureList().setDensity(0.5);
         body.getFixtureList().setUserData(this);
+        body.setLinearDamping(0);
 
         var mouse_joint_definition = new B2MouseJointDef();
         mouse_joint_definition.bodyA = new CircularPhysicalGameObject(new Vector2D(), PHYSICSCALEINVERT, 0).body;
@@ -54,20 +58,14 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     }
 
     public function receiveMessage(msg:Message):Bool {
-        if (Std.isOfType(msg, UnitDeath)) {
-            var u = cast(msg, UnitDeath).unit;
-            if (u == this)
-                graphics.rotation = Math.PI/2;
-            state = Dead;
-        }
         return false;
     }
     
     public override function update(dt: Float) {
-        if (state == Dead) return;
         super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
+        if (state == Dead) return;
 
         if (state == Idle) {
             totalTime += dt*RNGManager.rand.rand();
@@ -94,8 +92,10 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
             timeExecuting += dt;
             var v: Vector2D = body.getPosition();
             v -= target.body.getPosition();
-            destination = target.body.getPosition() - v.normalize()*0.05;
+            var r = new Vector2D(RNGManager.rand.rand()-0.5, RNGManager.rand.rand()-0.5) * 0.1;
+            destination = target.body.getPosition() - v.normalize()*0.1 + r;
             if (timeExecuting > 5) {
+                trace("zomb taking too long, magic attack");
                 target.hitpoints -= 0.01;
             }
         } else 

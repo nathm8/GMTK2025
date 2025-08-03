@@ -1,5 +1,7 @@
 package gamelogic;
 
+import gamelogic.physics.PhysicalWorld.PHYSICSCALEINVERT;
+import gamelogic.physics.PhysicalWorld.PHYSICSCALE;
 import box2D.dynamics.B2Body;
 import gamelogic.Corpse;
 import h2d.Bitmap;
@@ -57,7 +59,12 @@ class Location implements Updateable implements MessageListener {
         if (Army.singleton == null) return false;
         if (Std.isOfType(msg, EnemyDeath)) {
             var e = cast(msg, EnemyDeath).enemy;
-            enemies.remove(e);
+            if (enemies.contains(e)) {
+                enemies.remove(e);
+                var p: Vector2D = e.body.getPosition();
+                generateCorpse(p*PHYSICSCALE, e);
+                e.destroy();
+            }
         }
         // movement checks
         if (Army.singleton.state == Battling || Army.singleton.state == Marching || Army.singleton.state == AwaitingPickup) return false;
@@ -130,7 +137,15 @@ class Location implements Updateable implements MessageListener {
     }
 
 	public function update(dt:Float) {
-        for (c in corpses) c.update(dt);
+        for (c in corpses) {
+            var p: Vector2D = c.body.getPosition();
+            p *= PHYSICSCALE;
+            var delta = p - position;
+            // move corpses closer to location if they're far out            
+            if (delta.magnitude > 110)
+                c.body.applyForce(dt*delta.normalize()*PHYSICSCALEINVERT, c.body.getPosition());
+            c.update(dt);
+        }
     }
 
     function set_highlightRoads(value:Bool):Bool {

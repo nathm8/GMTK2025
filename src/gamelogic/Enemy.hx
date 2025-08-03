@@ -25,6 +25,8 @@ abstract class Enemy implements Combatant implements Updateable {
         id = maxID++;    
     }
 
+    public function destroy() {}
+
     function set_hitpoints(value:Float):Float {
         throw new haxe.exceptions.NotImplementedException();
     }

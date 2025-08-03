@@ -66,6 +66,9 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
     }
 
     public function receiveMessage(msg:Message):Bool {
+        if (Std.isOfType(msg, LostBattle)) {
+            state = Idle;
+        }
         return false;
     }
     
@@ -90,10 +93,14 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
         destination = c.body.getPosition();
     }
 
+    public override function destroy() {
+        graphics.remove();
+        PhysicalWorld.gameWorld.destroyJoint(mouseJoint);
+    }
+
     public override function set_hitpoints(value:Float):Float {
         if (value <= 0) {
             state = Dead;
-            graphics.rotation = Math.PI/2;
             MessageManager.sendMessage(new EnemyDeath(this));
         }
         hitpoints = value;

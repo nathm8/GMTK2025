@@ -56,9 +56,10 @@ class Necromancer extends Unit implements MessageListener implements Destination
 
     public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, MouseMove)) {
-            if (state == Idle) {
+            if (state == Idle || state == Attacking) {
                 var params = cast(msg, MouseMove);
-                destination = params.worldPosition.normalize()*(RNGManager.rand.random(50)+50);
+                var p = Army.singleton.route[0].position;
+                destination = p + (params.worldPosition - p).normalize()*(RNGManager.rand.random(50)+50);
                 destination *= PHYSICSCALEINVERT;
             }
         }
@@ -111,5 +112,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
 
     public function destroy() {}
 
-    public override function attack(c: Combatant) {}
+    public override function attack(c: Combatant) {
+        state = Attacking;
+    }
 }

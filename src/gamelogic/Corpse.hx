@@ -43,7 +43,7 @@ class Corpse implements Updateable {
         else if (t == SkeletonCorpse)
             sprite = new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
         else if (t == PeasantCorpse)
-            sprite = new Bitmap(hxd.Res.img.peasant.toTile().center(), graphics);
+            sprite = new Bitmap(hxd.Res.img.peasantzomb.toTile().center(), graphics);
         if (t == ZombieCorpse || t == SkeletonCorpse)
             mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
         else
@@ -60,28 +60,35 @@ class Corpse implements Updateable {
             var body_definition = new B2BodyDef();
             body_definition.type = B2BodyType.DYNAMIC_BODY;
             body_definition.position = pos*PHYSICSCALEINVERT;
-            body_definition.linearDamping = 0.25;
+            body_definition.linearDamping = 1;
             var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
             var fixture_definition = new B2FixtureDef();
             fixture_definition.shape = circle;
             fixture_definition.userData = this;
-            fixture_definition.density = 0.00001;
+            fixture_definition.density = 1000;
             body = PhysicalWorld.gameWorld.createBody(body_definition);
             body.createFixture(fixture_definition);
-        } else
+        } else {
             body = b;
+            body.getFixtureList().setDensity(1000);
+            body.getFixtureList().setUserData(this);
+            body.setLinearDamping(1.0);
+        }
 
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
     }
     
     public function detach() {
-        if (joint != null)
+        if (joint != null) {
+            body.getFixtureList().setDensity(1000);
             PhysicalWorld.gameWorld.destroyJoint(joint);
+        }
     }
 
     public function attachToBody(b: B2Body) {
         detach();
+        body.getFixtureList().setDensity(0.001);
         var d: Vector2D = b.getPosition();
         d -= body.getPosition();
         var distance_joint_definition = new B2DistanceJointDef();
@@ -106,8 +113,8 @@ class Corpse implements Updateable {
     }
 
     public function destroy() {
-        MessageManager.sendMessage(new CorpseDestroyed(this));
         detach();
         graphics.remove();
+        MessageManager.sendMessage(new CorpseDestroyed(this));
     }
 }
