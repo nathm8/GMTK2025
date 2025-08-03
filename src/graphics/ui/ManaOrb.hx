@@ -21,6 +21,7 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 
 	public function new() {
 		super();
+		scaleX = -1;
 		var mask_area = new Bitmap(hxd.Res.img.orbmask.toTile().center(), this);
 		mana = new Bitmap(hxd.Res.img.mana.toTile().center(), this);
 		orb = new Bitmap(hxd.Res.img.orb.toTile().center(), this);
