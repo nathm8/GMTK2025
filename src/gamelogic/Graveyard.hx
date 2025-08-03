@@ -19,7 +19,8 @@ class Graveyard extends Location {
         position = pos;
         graphics.x = pos.x;
         graphics.y = pos.y;
-        new Bitmap(hxd.Res.img.graveyard.toTile().center(), graphics);
+        var bmp = new Bitmap(hxd.Res.img.graveyard.toTile().center(), graphics);
+        bmp.scale(0.5);
     }
 
     public override function update(dt: Float) {
