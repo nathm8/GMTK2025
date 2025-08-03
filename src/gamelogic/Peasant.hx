@@ -28,6 +28,7 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
 	public var destination:Vector2D;
     var totalTime = 0.0;
     var location: Location;
+    var hitpointIndicator: Bitmap;
 
     public function new(p: Object, l: Location) {
         super();
@@ -37,6 +38,8 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         new Bitmap(hxd.Res.img.peasant.toTile().center(), graphics);
+        hitpointIndicator = new Bitmap(hxd.Res.img.peasantmask.toTile().center(), graphics);
+        hitpointIndicator.alpha = 0;
 
         corpseType = PeasantCorpse;
         
@@ -75,6 +78,8 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
     public function update(dt: Float) {
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
+        hitpointIndicator.alpha = 1 - (hitpoints / 2.0);
+        hitpointIndicator.alpha < .1 ? hitpointIndicator.alpha = .1 : null;
 
         if (state == Idle) {
             totalTime += dt;

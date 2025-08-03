@@ -54,12 +54,13 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = body.getPosition();
         mouse_joint_definition.maxForce = 1;
-        mouse_joint_definition.dampingRatio = 0.9;
-        mouse_joint_definition.frequencyHz = 0.6;
+        mouse_joint_definition.dampingRatio = 1;
+        mouse_joint_definition.frequencyHz = 0.25;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
 
-        necromancerPositions.unshift(necromancer.body.getPosition());
+        for (_ in 0...3)
+            necromancerPositions.unshift(necromancer.body.getPosition());
     }
 
     public function receiveMessage(msg:Message):Bool {
@@ -71,6 +72,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
         hitpointIndicator.alpha = 1 - (hitpoints / 1.0);
+        hitpointIndicator.alpha < .1 ? hitpointIndicator.alpha = .1 : null;
         if (state == Dead) return;
 
         if (state == Idle) {
@@ -80,8 +82,8 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
                 totalTime = -RNGManager.rand.rand()*0.05;
                 necromancerPositions.unshift(necromancer.body.getPosition());
                 var d = necromancerPositions.pop();
-                d.x += (RNGManager.rand.rand()-0.5)/8;
-                d.y += (RNGManager.rand.rand()-0.5)/8;
+                d.x += (RNGManager.rand.rand()-0.5)/4;
+                d.y += (RNGManager.rand.rand()-0.5)/4;
                 destination = d;
             }
         } if (state == FetchingCorpse) {
@@ -119,5 +121,10 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     public function destroy() {
         graphics.remove();
         PhysicalWorld.gameWorld.destroyJoint(mouseJoint);
+        if (corpse != null) {
+            corpse.detach();
+            Army.singleton.route[0].corpses.push(corpse);
+        }
+        corpse = null;
     }
 }

@@ -83,6 +83,7 @@ class Corpse implements Updateable {
     
     public function detach() {
         if (joint != null) {
+            body.getFixtureList().setDensity(50000);
             body.resetMassData();
             PhysicalWorld.gameWorld.destroyJoint(joint);
         }

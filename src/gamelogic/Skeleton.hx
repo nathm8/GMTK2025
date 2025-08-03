@@ -62,6 +62,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
         hitpointIndicator.alpha = 1 - (hitpoints / 2.0);
+        hitpointIndicator.alpha < .1 ? hitpointIndicator.alpha = .1 : null;
         if (state == Dead) return;
 
         if (state == Idle) {

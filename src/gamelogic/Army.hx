@@ -133,9 +133,9 @@ class Army implements Updateable implements MessageListener {
                 units.push(new Zombie(graphics, necromancer, params.corpse.body, true));
         }
         if (Std.isOfType(msg, UnitDeath)) {
-            trace("friendly death");
-            trace("enemies",route[0].enemies.length);
-            trace("units",units.length);
+            // trace("friendly death");
+            // trace("enemies",route[0].enemies.length);
+            // trace("units",units.length);
             // cancel any pending corpse pickups
             pendingCollections = 0;
             var u = cast(msg, UnitDeath).unit;
@@ -151,9 +151,9 @@ class Army implements Updateable implements MessageListener {
                 battle();
         }
         if (Std.isOfType(msg, EnemyDeath)) {
-            trace("enemy death");
-            trace("enemies",route[0].enemies.length);
-            trace("units",units.length);
+            // trace("enemy death");
+            // trace("enemies",route[0].enemies.length);
+            // trace("units",units.length);
             // reshuffle combatants
             if (state == Battling)
                 battle();
@@ -204,19 +204,20 @@ class Army implements Updateable implements MessageListener {
                 pendingCollections++;
             }
         }
-        trace("collection corpses", pendingCollections);
+        // trace("collection corpses", pendingCollections);
     }
 
     function battle() {
-        trace("army battling");
+        // trace("army battling");
         // Defeat
         if (units.length == 1) {
-            trace("defeat");
+            // trace("defeat");
             MessageManager.sendMessage(new LostBattle());
             defeats++;
             // TODO fade to black and back
             if (necromancer.corpse != null) {
                 route[0].corpses.push(necromancer.corpse);
+                necromancer.corpse.detach();
                 necromancer.corpse = null;
             }
             route = new Array<Location>();
@@ -228,7 +229,7 @@ class Army implements Updateable implements MessageListener {
         }
         // Victory
         if (route[0].enemies.length == 0) {
-            trace("victory");
+            // trace("victory");
             for (u in units)
                 u.state = Idle;
             collectCorpses();
@@ -237,10 +238,10 @@ class Army implements Updateable implements MessageListener {
         state = Battling;
         var friendlies = units.copy();
         friendlies.remove(necromancer);
-        trace("f", friendlies.length);
+        // trace("f", friendlies.length);
         RNGManager.rand.shuffle(friendlies);
         var enemies = route[0].enemies.copy();
-        trace("e", enemies.length);
+        // trace("e", enemies.length);
         RNGManager.rand.shuffle(enemies);
         for (u in units) {
             if (enemies.length == 0) {
