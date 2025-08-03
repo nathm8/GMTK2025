@@ -34,6 +34,7 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 
 		var mask = new h2d.filter.Mask(mask_area);
 		mana.filter = mask;
+		mana.alpha = 0.75;
 		measures.filter = mask;
 		x = 128;
 		y = 720-256+128;

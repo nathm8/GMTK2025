@@ -1,5 +1,7 @@
 package gamelogic;
 
+import h2d.Bitmap;
+import h2d.col.Delaunay;
 import haxe.ds.Vector;
 import hxsl.Types.Vec;
 import h2d.col.Bounds;
@@ -63,6 +65,27 @@ class Map implements Updateable implements MessageListener {
         }
         var voronoi = new Voronoi();
         var diagram = voronoi.compute(points, Bounds.fromValues(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT));
+
+        // for (tri in Delaunay.triangulate(points)) {
+        //     trace(tri);
+        //     var p = tri.p1 + tri.p2 + tri.p3;
+        //     var bmp: Bitmap = null;
+        //     var i = RNGManager.rand.random(6);
+        //     if (i == 0)
+        //         bmp = new Bitmap(hxd.Res.img.forest1.toTile().center(), graphics.parent);
+        //     if (i == 1)
+        //         bmp = new Bitmap(hxd.Res.img.forest2.toTile().center(), graphics.parent);
+        //     if (i == 2)
+        //         bmp = new Bitmap(hxd.Res.img.forest3.toTile().center(), graphics.parent);
+        //     if (i == 3)
+        //         bmp = new Bitmap(hxd.Res.img.forest4.toTile().center(), graphics.parent);
+        //     if (i == 4)
+        //         bmp = new Bitmap(hxd.Res.img.forest5.toTile().center(), graphics.parent);
+        //     if (i == 5)
+        //         bmp = new Bitmap(hxd.Res.img.forest6.toTile().center(), graphics.parent);
+        //     bmp.x = p.x;
+        //     bmp.y = p.y;
+        // }
 
         for (cell in diagram.cells) {
             for (n in cell.getNeighbors()){
