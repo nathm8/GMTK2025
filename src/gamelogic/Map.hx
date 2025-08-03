@@ -31,6 +31,13 @@ class Map implements Updateable implements MessageListener {
     public function new(p: Object) {
         MessageManager.addListener(this);
         graphics = new Graphics(p);
+
+        var grass = hxd.Res.img.grass.toTile().center();
+        graphics.tileWrap = true;
+        graphics.beginTileFill(grass.width,grass.height,1,1,grass);
+        graphics.drawRect(-WIDTH, -HEIGHT, WIDTH*2, HEIGHT*2);
+        graphics.endFill();
+
         var top_left = new Vector2D(0,0);
         var top_right = new Vector2D(0,0);
         var bot_left = new Vector2D(0,0);

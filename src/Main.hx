@@ -32,7 +32,7 @@ class Main extends hxd.App implements MessageListener {
 		sound = hxd.Res.snd.session2;
 		sound.play(true);
 		var manager = hxd.snd.Manager.get();
-		manager.masterVolume = 0.25;
+		manager.masterVolume = 0.15;
 		// newGame();
 		mainMenu();
 	}
