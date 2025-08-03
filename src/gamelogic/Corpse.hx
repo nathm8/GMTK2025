@@ -50,6 +50,7 @@ class Corpse implements Updateable {
             mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
         else
             mask = new Bitmap(hxd.Res.img.peasantmask.toTile().center(), sprite);
+        sprite.scale(0.5);
         type = t;
         mask.alpha = 0.75;
         sprite.rotation = Math.PI/2;
@@ -63,7 +64,7 @@ class Corpse implements Updateable {
             body_definition.type = B2BodyType.DYNAMIC_BODY;
             body_definition.position = pos*PHYSICSCALEINVERT;
             body_definition.linearDamping = 1;
-            var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+            var circle = new B2CircleShape(30*PHYSICSCALEINVERT);
             var fixture_definition = new B2FixtureDef();
             fixture_definition.shape = circle;
             fixture_definition.userData = this;

@@ -33,7 +33,8 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         destination = new Vector2D();
         necromancer = n;
         if  (!isPeasant) {
-            new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
+            var bmp = new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
+            bmp.scale(0.5);
             hitpointIndicator = new Bitmap(hxd.Res.img.unitmask.toTile().center(), graphics);
         }
         else {
@@ -53,7 +54,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = body.getPosition();
-        mouse_joint_definition.maxForce = 1;
+        mouse_joint_definition.maxForce = 50;
         mouse_joint_definition.dampingRatio = 0.25;
         mouse_joint_definition.frequencyHz = 0.25;
         

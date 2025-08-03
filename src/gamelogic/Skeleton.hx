@@ -31,7 +31,8 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         graphics = new Graphics(p);
         destination = new Vector2D();
         necromancer = n;
-        new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
+        var bmp = new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
+        bmp.scale(0.5);
         hitpointIndicator = new Bitmap(hxd.Res.img.unitmask.toTile().center(), graphics);
         hitpointIndicator.alpha = 0;
 
@@ -46,7 +47,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = body.getPosition();
-        mouse_joint_definition.maxForce = 10;
+        mouse_joint_definition.maxForce = 800;
         mouse_joint_definition.dampingRatio = 0.5;
         mouse_joint_definition.frequencyHz = 0.75;
         

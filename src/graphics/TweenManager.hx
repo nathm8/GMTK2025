@@ -45,7 +45,7 @@ class ScaleBounceTween extends Tween {
 			+ 3 * Math.pow(1 - t, 2) * t * x[1]
 			+ 3 * (1 - t) * Math.pow(t, 2) * x[2]
 			+ Math.pow(t, 3) * x[3];
-		drawable.setScale(bx);
+		drawable.setScale(bx*0.5);
 	}
 }
 
@@ -229,10 +229,14 @@ class GlowInfiniteTween extends Tween {
 
 class FadeOutTween extends Tween {
 	var obj:Object;
+	var start: Float;
+	var end: Float;
 
 	public function new(o:Object, te:Float, tt:Float) {
 		super(te, tt);
 		obj = o;
+		start = o.alpha;
+		end = 0.0;
 	}
 
 	override function update(dt:Float) {
@@ -240,7 +244,7 @@ class FadeOutTween extends Tween {
 		var t = timeElapsed / timeTotal;
 		if (t < 0.5)
 			t = 0;
-		obj.alpha = 1-t;
+		obj.alpha = start*(1-t) + end*t;
 		// if (t == 1)
 		// 	obj.remove();
 	}

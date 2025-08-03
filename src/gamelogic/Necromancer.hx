@@ -31,15 +31,16 @@ class Necromancer extends Unit implements MessageListener implements Destination
         graphics = new Graphics(p);
         destination = new Vector2D();
         state = Idle;
-        new Bitmap(hxd.Res.img.necro.toTile().center(), graphics);
+        var bmp = new Bitmap(hxd.Res.img.necro.toTile().center(), graphics);
+        bmp.scale(0.5);
 
         var body_definition = new B2BodyDef();
         body_definition.type = B2BodyType.DYNAMIC_BODY;
-        var circle = new B2CircleShape(20*PHYSICSCALEINVERT);
+        var circle = new B2CircleShape(70*PHYSICSCALEINVERT);
         var fixture_definition = new B2FixtureDef();
         fixture_definition.shape = circle;
         fixture_definition.userData = this;
-        fixture_definition.density = 5000;
+        fixture_definition.density = 10000;
         body = PhysicalWorld.gameWorld.createBody(body_definition);
         body.createFixture(fixture_definition);
 
@@ -48,7 +49,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 500000;
+        mouse_joint_definition.maxForce = 1000000;
         mouse_joint_definition.dampingRatio = 1.0;
         mouse_joint_definition.frequencyHz = 1.0;
         

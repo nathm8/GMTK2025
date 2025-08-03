@@ -37,7 +37,8 @@ class Knight extends Enemy implements MessageListener implements DestinationDire
         location = l;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
-        new Bitmap(hxd.Res.img.knight.toTile().center(), graphics);
+        var bmp = new Bitmap(hxd.Res.img.knight.toTile().center(), graphics);
+        bmp.scale(0.5);
         hitpointIndicator = new Bitmap(hxd.Res.img.knightmask.toTile().center(), graphics);
         hitpointIndicator.alpha = 0;
 
