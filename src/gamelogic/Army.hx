@@ -151,7 +151,7 @@ class Army implements Updateable implements MessageListener {
             // no enemies, advance
             if (route[0].enemies.length == 0) {
                 trace("victory");
-                state = AwaitingPickup;
+                collectCorpses();
             }
             trace("enemy death");
             trace("enemies",route[0].enemies.length);
