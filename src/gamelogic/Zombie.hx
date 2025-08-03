@@ -48,7 +48,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         offset = new Vector2D(RNGManager.rand.rand()-0.5, RNGManager.rand.rand()-0.5)/8;
 
         body = b;
-        body.getFixtureList().setDensity(0.5);
+        body.getFixtureList().setDensity(0.25);
         body.resetMassData();
         body.getFixtureList().setUserData(this);
         body.setLinearDamping(0.5);
@@ -109,8 +109,8 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
             destination = target.body.getPosition() - v.normalize()*0.1 + r;
             if (timeExecuting > 5) {
                 trace("zomb taking too long, magic attack");
-                target.hitpoints -= 0.01;
-                hitpoints -= 0.01;
+                target.hitpoints -= 0.05;
+                hitpoints -= 0.05;
             }
         } else 
             timeExecuting = 0;
