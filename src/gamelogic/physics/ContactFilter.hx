@@ -26,7 +26,8 @@ class ContactFilter extends B2ContactFilter {
                     var u = cast(uda, Unit);
                     return u.corpse == c;
                 }
-                if (c.joint == null) return false;
+                // if (c.joint == null)
+                return false;
             }
             return true;
         }

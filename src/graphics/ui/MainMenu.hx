@@ -8,12 +8,15 @@ import h2d.Scene;
 class MainMenu extends Scene {
 	public function new(startGame:() -> Void) {
 		super();
-
+        var WIDTH = 1280;
+        var HEIGHT = 720;
+        // var WIDTH = 1920;
+        // var HEIGHT = 1080;
 		// graphics
 		var visuals = new Object(this);
 		var visual = new Bitmap(hxd.Res.img.Title.toTile().center(), visuals);
-		visual.x = 1920 / 2;
-		visual.y = 1080 / 2;
+		visual.x = WIDTH / 2;
+		visual.y = HEIGHT / 2;
 
 		// title
 		var titleText = new h2d.Text(hxd.res.DefaultFont.get(), visuals);

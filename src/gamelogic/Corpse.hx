@@ -1,5 +1,6 @@
 package gamelogic;
 
+import box2D.dynamics.joints.B2DistanceJoint;
 import utilities.Vector2D;
 import box2D.dynamics.joints.B2Joint;
 import utilities.MessageManager;
@@ -104,9 +105,14 @@ class Corpse implements Updateable {
     }
 
     public function update(dt:Float) {
-        var v: Vector2D = body.getPosition();
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
+        if (joint != null) {
+            var dist = cast(joint, B2DistanceJoint);
+            if (dist.getLength() > 1) {
+                dist.setLength(dist.getLength() - 10*dt);
+            }
+        }
     }
 
     public function resurrect() {

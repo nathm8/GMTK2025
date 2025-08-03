@@ -92,7 +92,6 @@ class Army implements Updateable implements MessageListener {
         //     fixture_definition.density = 10;
         //     var body = PhysicalWorld.gameWorld.createBody(body_definition);
         //     body.createFixture(fixture_definition);
-
         //     units.push(new Zombie(graphics, necromancer, body));
         // }
     }
@@ -181,7 +180,6 @@ class Army implements Updateable implements MessageListener {
         }
         if (Std.isOfType(msg, EnemyDeath)) {
             kills++;
-            trace(kills);
             // trace("enemy death");
             // trace("enemies",route[0].enemies.length);
             // trace("units",units.length);
@@ -215,13 +213,6 @@ class Army implements Updateable implements MessageListener {
             } if (route[0].enemies.length > 0) {
                 battle();
             }
-            // if (Std.isOfType(route[0], Farm)) {
-            //     // Battle
-            //     battle();
-            //     // Collect Corpses
-            //     // Continue
-            //     // resolve the area
-            // }
         }
     }
 
@@ -262,10 +253,10 @@ class Army implements Updateable implements MessageListener {
         }
         // Victory
         if (route[0].enemies.length == 0) {
-            trace("victory");
+            // trace("victory");
             if (Std.isOfType(route[0], Castle)) {
                 victoryFlag = true;
-                trace("victory flag set");
+                // trace("victory flag set");
             }
             // trace("victory");
             for (u in units)

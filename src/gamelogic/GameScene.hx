@@ -25,7 +25,7 @@ class GameScene extends Scene implements MessageListener {
 	public function new() {
 		super();
 		fpsText = new h2d.Text(hxd.res.DefaultFont.get());
-		fpsText.visible = true;
+		fpsText.visible = false;
 		defaultSmooth = false;
 		camera.anchorX = 0.5;
 		camera.anchorY = 0.5;
@@ -37,7 +37,6 @@ class GameScene extends Scene implements MessageListener {
 
 		MessageManager.addListener(this);
 
-		
 		updateables.push(new Map(this));
 		updateables.push(new Army(this));
 		var o = new ManaOrb();
