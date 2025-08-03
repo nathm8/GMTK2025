@@ -39,6 +39,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
         var fixture_definition = new B2FixtureDef();
         fixture_definition.shape = circle;
         fixture_definition.userData = this;
+        fixture_definition.density = 5000;
         body = PhysicalWorld.gameWorld.createBody(body_definition);
         body.createFixture(fixture_definition);
 
@@ -47,9 +48,9 @@ class Necromancer extends Unit implements MessageListener implements Destination
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 5000;
-        mouse_joint_definition.dampingRatio = 0.9;
-        mouse_joint_definition.frequencyHz = 0.9;
+        mouse_joint_definition.maxForce = 500000;
+        mouse_joint_definition.dampingRatio = 1.0;
+        mouse_joint_definition.frequencyHz = 1.0;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
     }

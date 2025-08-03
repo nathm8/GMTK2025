@@ -1,5 +1,6 @@
 package gamelogic;
 
+import haxe.ds.Vector;
 import hxsl.Types.Vec;
 import h2d.col.Bounds;
 import h2d.col.Voronoi;
@@ -28,6 +29,10 @@ class Map implements Updateable implements MessageListener {
     public function new(p: Object) {
         MessageManager.addListener(this);
         graphics = new Graphics(p);
+        var top_left = new Vector2D(0,0);
+        var top_right = new Vector2D(0,0);
+        var bot_left = new Vector2D(0,0);
+        var bot_right = new Vector2D(0,0);
         var points = new Array<Point>();
         points.push(new Vector2D());
         for (_ in 0...LOCATIONS) {
@@ -45,6 +50,14 @@ class Map implements Updateable implements MessageListener {
                         break;
                     }
                 }
+                if (x < top_left.x && y < top_left.y)
+                    top_left = new Vector2D(x, y);
+                if (x > top_right.x && y < top_right.y)
+                    top_right = new Vector2D(x, y);
+                if (x < bot_left.x && y > bot_left.y)
+                    bot_left = new Vector2D(x, y);
+                if (x > bot_right.x && y > bot_right.y)
+                    bot_right = new Vector2D(x, y);
             }
             points.push(p);
         }
@@ -60,6 +73,9 @@ class Map implements Updateable implements MessageListener {
             var p: Vector2D = cell.point;
             if (p == new Vector2D()) {
                 locations.push(new HQTower(graphics, cell.id, cell.getNeighborIndexes(), this));
+                continue;
+            } if (p == top_left || p == top_right || p == bot_left || p == bot_right) {
+                locations.push(new Castle(graphics, p, cell.id, cell.getNeighborIndexes(), this));
                 continue;
             }
             var d = p.magnitude;

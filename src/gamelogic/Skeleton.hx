@@ -47,7 +47,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = body.getPosition();
         mouse_joint_definition.maxForce = 10;
-        mouse_joint_definition.dampingRatio = 0.75;
+        mouse_joint_definition.dampingRatio = 0.5;
         mouse_joint_definition.frequencyHz = 0.75;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
@@ -69,9 +69,12 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
             totalTime += dt*RNGManager.rand.rand();
             if (totalTime > 0.05) {
                 totalTime = 0;
-                var d = necromancer.body.getPosition();
-                d.x += (RNGManager.rand.rand()-0.5)/12;
-                d.y += (RNGManager.rand.rand()-0.5)/12;
+                var m = 1.0;
+                // if (Army.singleton.units.length > 20)
+                //     m += Math.pow(Army.singleton.units.length, 0.25);
+                var d: Vector2D = necromancer.body.getPosition();
+                d.x += (RNGManager.rand.rand()-0.5)/12*m;
+                d.y += (RNGManager.rand.rand()-0.5)/12*m;
                 destination = d;
             }
         } else if (state == FetchingCorpse) {

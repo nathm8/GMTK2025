@@ -66,6 +66,7 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
         mouse_joint_definition.frequencyHz = 0.1;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
+        state = Idle;
     }
 
     public function receiveMessage(msg:Message):Bool {

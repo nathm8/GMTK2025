@@ -31,11 +31,7 @@ class MouseMove extends Message {
 	public var worldPosition: Vector2D;
 	public function new(e: Event, p: Vector2D) {super(); event = e; worldPosition = p;}
 }
-class Victory extends Message {
-	public var t: Float;
-	public var k: Int;
-	public function new(t: Float, k: Int) {super(); this.t = t; this.k = k;}
-}
+class Victory extends Message {}
 class LocationSelected extends Message {
 	public var location: Location;
 	public function new(k: Location) {super(); location = k;}

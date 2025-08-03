@@ -54,7 +54,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = body.getPosition();
         mouse_joint_definition.maxForce = 1;
-        mouse_joint_definition.dampingRatio = 1;
+        mouse_joint_definition.dampingRatio = 0.25;
         mouse_joint_definition.frequencyHz = 0.25;
         
         mouseJoint = cast(PhysicalWorld.gameWorld.createJoint(mouse_joint_definition), B2MouseJoint);
@@ -81,9 +81,12 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
                 totalTime = 0;
                 totalTime = -RNGManager.rand.rand()*0.05;
                 necromancerPositions.unshift(necromancer.body.getPosition());
+                var m = 1.0;
+                // if (Army.singleton.units.length > 20)
+                //     m += Math.pow(Army.singleton.units.length, 0.25);
                 var d = necromancerPositions.pop();
-                d.x += (RNGManager.rand.rand()-0.5)/4;
-                d.y += (RNGManager.rand.rand()-0.5)/4;
+                d.x += (RNGManager.rand.rand()-0.5)/4*m;
+                d.y += (RNGManager.rand.rand()-0.5)/4*m;
                 destination = d;
             }
         } if (state == FetchingCorpse) {

@@ -1,5 +1,6 @@
 package gamelogic;
 
+import graphics.VictoryScreen;
 import graphics.DefeatScreen;
 import h2d.Camera;
 import utilities.Vector2D;
@@ -41,9 +42,10 @@ class GameScene extends Scene implements MessageListener {
 		updateables.push(new Army(this));
 		var o = new ManaOrb();
 		add(o, 2);
+		updateables.push(o);
 		add(fpsText, 2);
 		add(new DefeatScreen(this), 2);
-		updateables.push(o);
+		add(new VictoryScreen(this), 2);
 	}
 	
 	public function update(dt:Float) {

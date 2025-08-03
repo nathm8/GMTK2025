@@ -24,7 +24,7 @@ class ContactFilter extends B2ContactFilter {
                 var c = cast(udb, Corpse);
                 if (Std.isOfType(uda, Unit)) {
                     var u = cast(uda, Unit);
-                    if (u.corpse == c) return true;
+                    return u.corpse == c;
                 }
                 if (c.joint == null) return false;
             }
