@@ -46,10 +46,7 @@ class Corpse implements Updateable {
             sprite = new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
         else if (t == PeasantCorpse)
             sprite = new Bitmap(hxd.Res.img.peasantzomb.toTile().center(), graphics);
-        if (t == ZombieCorpse || t == SkeletonCorpse)
-            mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
-        else
-            mask = new Bitmap(hxd.Res.img.hostilemask.toTile().center(), sprite);
+        mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
         sprite.scale(0.5);
         type = t;
         mask.alpha = 0.75;
