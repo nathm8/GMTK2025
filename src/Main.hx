@@ -33,8 +33,8 @@ class Main extends hxd.App implements MessageListener {
 		sound.play(true);
 		var manager = hxd.snd.Manager.get();
 		manager.masterVolume = 0.25;
-		newGame();
-		// mainMenu();
+		// newGame();
+		mainMenu();
 	}
 	
 	override function update(dt:Float) {

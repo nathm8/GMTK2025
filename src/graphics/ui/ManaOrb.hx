@@ -21,20 +21,19 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 
 	public function new() {
 		super();
+		var mask_area = new Bitmap(hxd.Res.img.orbmask.toTile().center(), this);
+		mana = new Bitmap(hxd.Res.img.mana.toTile().center(), this);
 		orb = new Bitmap(hxd.Res.img.orb.toTile().center(), this);
-		var mask_area = new Bitmap(hxd.Res.img.orbmask.toTile().center(), orb);
-		mana = new Bitmap(hxd.Res.img.mana.toTile().center(), orb);
 		mana.y = 10;
 		// 10 = full
 		// 190 = empty
 		mana.tileWrap = true;
 		mana.tile.scrollDiscrete(0, -1);
 		measures = new Graphics(orb);
-		var orbouter = new Bitmap(hxd.Res.img.orbouter.toTile().center(), orb);
 
 		var mask = new h2d.filter.Mask(mask_area);
 		mana.filter = mask;
-		mana.alpha = 0.75;
+		// mana.alpha = 0.75;
 		measures.filter = mask;
 		x = 128;
 		y = 720-256+128;
@@ -65,7 +64,7 @@ class ManaOrb extends Object implements Updateable implements MessageListener {
 
 	function calcMeasurements() {
 		measures.clear();
-		measures.lineStyle(5, 0x000000);
+		measures.lineStyle(2.5, 0x000000);
 		measurePercentages = new Array<Float>();
 		measurePercentages.push(0);
 		var lines = Army.singleton.range;
