@@ -19,8 +19,10 @@ class DefeatScreen extends Graphics implements MessageListener {
 
     public function new(p: Object) {
         super(p);
-        var WIDTH = 1920;
-        var HEIGHT = 1080;
+        var WIDTH = 1280;
+        var HEIGHT = 720;
+        // var WIDTH = 1920;
+        // var HEIGHT = 1080;
         beginFill(0x000000);
         addVertex(0, 0, 0, 0 ,0, 1);
         addVertex(WIDTH, 0, 0, 0 ,0, 1);

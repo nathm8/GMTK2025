@@ -143,7 +143,7 @@ class Location implements Updateable implements MessageListener {
             var delta = position - p;
             // move corpses closer to location if they're far out
             if (delta.magnitude > 50) 
-                c.body.applyForce(10000*dt*delta.normalize()*PHYSICSCALEINVERT, c.body.getPosition());
+                c.body.applyForce(50000*dt*delta.normalize()*PHYSICSCALEINVERT, c.body.getPosition());
             c.update(dt);
         }
     }

@@ -20,8 +20,10 @@ class VictoryScreen extends Graphics implements MessageListener {
 
     public function new(p: Object) {
         super(p);
-        var WIDTH = 1920;
-        var HEIGHT = 1080;
+        var WIDTH = 1280;
+        var HEIGHT = 720;
+        // var WIDTH = 1920;
+        // var HEIGHT = 1080;
         beginFill(0x000000);
         addVertex(0, 0, 0, 0 ,0, 1);
         addVertex(WIDTH, 0, 0, 0 ,0, 1);
@@ -34,14 +36,14 @@ class VictoryScreen extends Graphics implements MessageListener {
         defeatText = new Text(hxd.res.DefaultFont.get(), this);
         defeatText.scale(5);
 		defeatText.x = WIDTH/2;
-		defeatText.y = HEIGHT/2 - 400;
+		defeatText.y = HEIGHT/2 - 350;
 		defeatText.text = "Victory!";
 		defeatText.textAlign = Center;
 
         forNowText = new Text(hxd.res.DefaultFont.get(), this);
         forNowText.scale(5);
 		forNowText.x = WIDTH/2;
-		forNowText.y = HEIGHT/2-300;
+		forNowText.y = HEIGHT/2 - 250;
         // Unit with most re-resurrections: $loses';
 		forNowText.textAlign = Center;
         forNowText.alpha = 0;
@@ -62,6 +64,7 @@ class VictoryScreen extends Graphics implements MessageListener {
 
     public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, Victory)) {
+            setStats();
             TweenManager.singleton.add(new FadeInTween(this, 0, 5));
             TweenManager.singleton.add(new FadeInTween(forNowText, -3, 2));
         }
