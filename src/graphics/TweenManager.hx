@@ -235,6 +235,29 @@ class FadeOutTween extends Tween {
 	public function new(o:Object, te:Float, tt:Float) {
 		super(te, tt);
 		obj = o;
+		start = 1.0;//o.alpha;
+		end = 0.0;
+	}
+
+	override function update(dt:Float) {
+		super.update(dt);
+		var t = timeElapsed / timeTotal;
+		if (t < 0.5)
+			t = 0;
+		obj.alpha = start*(1-t) + end*t;
+		// if (t == 1)
+		// 	obj.remove();
+	}
+}
+
+class FadeOutCorpseMaskTween extends Tween {
+	var obj:Object;
+	var start: Float;
+	var end: Float;
+
+	public function new(o:Object, te:Float, tt:Float) {
+		super(te, tt);
+		obj = o;
 		start = o.alpha;
 		end = 0.0;
 	}

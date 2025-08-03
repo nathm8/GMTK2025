@@ -52,7 +52,6 @@ class DefeatScreen extends Graphics implements MessageListener {
 
     public function receiveMessage(msg:Message):Bool {
         if (Std.isOfType(msg, LostBattle)) {
-            TweenManager.singleton.add(new FadeInTween(this, 0, 5));
             TweenManager.singleton.add(new FadeInTween(forNowText, -3, 2));
             TweenManager.singleton.add(new FadeOutTween(this, -5, 1.5));
         }

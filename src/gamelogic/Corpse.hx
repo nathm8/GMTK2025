@@ -49,7 +49,7 @@ class Corpse implements Updateable {
         if (t == ZombieCorpse || t == SkeletonCorpse)
             mask = new Bitmap(hxd.Res.img.unitmask.toTile().center(), sprite);
         else
-            mask = new Bitmap(hxd.Res.img.peasantmask.toTile().center(), sprite);
+            mask = new Bitmap(hxd.Res.img.hostilemask.toTile().center(), sprite);
         sprite.scale(0.5);
         type = t;
         mask.alpha = 0.75;
@@ -119,7 +119,7 @@ class Corpse implements Updateable {
     public function resurrect() {
         detach();
         resurrecting = true;
-        TweenManager.singleton.add(new FadeOutTween(mask, 0, 2));
+        TweenManager.singleton.add(new FadeOutCorpseMaskTween(mask, 0, 2));
         TweenManager.singleton.add(new ScaleBounceTween(sprite, 0, 3));
         TweenManager.singleton.add(new RotateTween(sprite, Math.PI/2, 0, 0, 1));
         TweenManager.singleton.add(new DelayedCallTween(() -> MessageManager.sendMessage(new NewUnit(this)), -3, 0));

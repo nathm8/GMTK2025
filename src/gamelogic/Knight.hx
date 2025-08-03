@@ -49,7 +49,7 @@ class Knight extends Enemy implements MessageListener implements DestinationDire
         body_definition.position = l.position*PHYSICSCALEINVERT;
         body_definition.position += new Vector2D(RNGManager.rand.random(100)-50, RNGManager.rand.random(100)-50)*PHYSICSCALEINVERT;
         destination = body_definition.position;
-        var circle = new B2CircleShape(15*PHYSICSCALEINVERT);
+        var circle = new B2CircleShape(30*PHYSICSCALEINVERT);
         var fixture_definition = new B2FixtureDef();
         fixture_definition.shape = circle;
         fixture_definition.userData = this;
@@ -62,7 +62,7 @@ class Knight extends Enemy implements MessageListener implements DestinationDire
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 1000;
+        mouse_joint_definition.maxForce = 2000;
         mouse_joint_definition.dampingRatio = 1.0;
         mouse_joint_definition.frequencyHz = 1.0;
         

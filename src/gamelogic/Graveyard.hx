@@ -14,7 +14,8 @@ class Graveyard extends Location {
 	}
     
     public function new(p: Object, pos: Vector2D, i: Int, n: Array<Int>, m: Map) {
-        super(p, i, n, m);
+        var highlight_bmp = new Bitmap(hxd.Res.img.locationblur.toTile().center(), highlight);
+        super(p, i, n, m, highlight_bmp);
         position = pos;
         graphics.x = pos.x;
         graphics.y = pos.y;

@@ -21,6 +21,7 @@ class Location implements Updateable implements MessageListener {
     public var selected = false;
     public var highlightRoads(get,set): Bool;
     public var graphics: Graphics;
+    var highlightBmp: Bitmap;
 
     public var enemies = new Array<Enemy>();
     public var corpses = new Array<Corpse>();
@@ -29,13 +30,14 @@ class Location implements Updateable implements MessageListener {
     public var neighbourIndices = new Array<Int>();
     var map: Map;
 
-    public function new(p: Object, i: Int, ns: Array<Int>, m: Map) {
+    public function new(p: Object, i: Int, ns: Array<Int>, m: Map, bmp: Bitmap) {
         id = i;
         neighbourIndices = ns;
         map = m;
         graphics = new Graphics(p);
         highlight = new Graphics(graphics);
-        new Bitmap(hxd.Res.img.blur.toTile().center(), highlight);
+        highlight.addChild(bmp);
+        // highlightBmp = new Bitmap(hxd.Res.img.locationblur.toTile().center(), highlight);
         targetSelected = new Bitmap(hxd.Res.img.targetselected.toTile().center(), highlight);
         targetSelected.visible = false;
         highlight.visible = false;
@@ -94,7 +96,6 @@ class Location implements Updateable implements MessageListener {
                 } else if (isNeighbour(Army.singleton.route[Army.singleton.route.length-1]) && Army.singleton.rangeLeft > 0 || (Army.singleton.state == Idle && id == hqID)){
                     selected = true;
                     highlight.visible = true;
-                    highlight.rotation = Math.PI/4;
                     // targetSelected.visible = true;
                     if (id == hqID && Army.singleton.state == Idle) {
                         selected = false;

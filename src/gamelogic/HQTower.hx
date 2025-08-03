@@ -17,12 +17,12 @@ class HQTower extends Location {
 	}
     
     public function new(p: Object, i: Int, n: Array<Int>, m: Map) {
-        super(p, i, n, m);
+        var highlight_bmp = new Bitmap(hxd.Res.img.towerblur.toTile().center(), highlight);
+        super(p, i, n, m, highlight_bmp);
         Location.hqID = i;
         singleton = this;
         position = new Vector2D();
         var bmp = new Bitmap(hxd.Res.img.tower.toTile().center(), graphics);
-        bmp.y = -50;
     }
 
     public override function update(dt: Float) {

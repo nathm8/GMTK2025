@@ -22,6 +22,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
     var necromancer: Necromancer;
     var totalTime = 0.0;
     var timeExecuting = 0.0;
+    var offset: Vector2D;
 
     public function new(p: Object, n: Necromancer, b: B2Body) {
         super();
@@ -33,7 +34,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         necromancer = n;
         var bmp = new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
         bmp.scale(0.5);
-        hitpointIndicator = new Bitmap(hxd.Res.img.unitmask.toTile().center(), graphics);
+        hitpointIndicator = new Bitmap(hxd.Res.img.unitmask.toTile().center(), bmp);
         hitpointIndicator.alpha = 0;
 
         body = b;
@@ -41,6 +42,8 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         body.resetMassData();
         body.getFixtureList().setUserData(this);
         body.setLinearDamping(0.5);
+
+        offset = new Vector2D(RNGManager.rand.rand()-0.5, RNGManager.rand.rand()-0.5)/10;
 
         var mouse_joint_definition = new B2MouseJointDef();
         mouse_joint_definition.bodyA = new CircularPhysicalGameObject(new Vector2D(), PHYSICSCALEINVERT, 0).body;
@@ -70,13 +73,9 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
             totalTime += dt*RNGManager.rand.rand();
             if (totalTime > 0.05) {
                 totalTime = 0;
-                var m = 1.0;
-                // if (Army.singleton.units.length > 20)
-                //     m += Math.pow(Army.singleton.units.length, 0.25);
+                var m = Math.pow(Army.singleton.units.length, 0.25);
                 var d: Vector2D = necromancer.body.getPosition();
-                d.x += (RNGManager.rand.rand()-0.5)/12*m;
-                d.y += (RNGManager.rand.rand()-0.5)/12*m;
-                destination = d;
+                destination = d+offset*m;
             }
         } else if (state == FetchingCorpse) {
             var cp: Vector2D = body.getPosition();

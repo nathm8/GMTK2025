@@ -66,30 +66,26 @@ class Army implements Updateable implements MessageListener {
         necromancer = new Necromancer(graphics);
         units.push(necromancer);
         // DEBUG
-        //  for (_ in 0...200) {
+        //  for (_ in 0...50) {
         //     var body_definition = new B2BodyDef();
         //     body_definition.type = B2BodyType.DYNAMIC_BODY;
         //     body_definition.position = new Vector2D();
         //     body_definition.linearDamping = 1;
-        //     var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+        //     var circle = new B2CircleShape(30*PHYSICSCALEINVERT);
         //     var fixture_definition = new B2FixtureDef();
         //     fixture_definition.shape = circle;
-        //     fixture_definition.userData = this;
-        //     fixture_definition.density = 10;
         //     var body = PhysicalWorld.gameWorld.createBody(body_definition);
         //     body.createFixture(fixture_definition);
         //     units.push(new Skeleton(graphics, necromancer, body));
         //  }
-        //  for (_ in 0...200) {
+        //  for (_ in 0...50) {
         //     var body_definition = new B2BodyDef();
         //     body_definition.type = B2BodyType.DYNAMIC_BODY;
         //     body_definition.position = new Vector2D();
         //     body_definition.linearDamping = 1;
-        //     var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+        //     var circle = new B2CircleShape(30*PHYSICSCALEINVERT);
         //     var fixture_definition = new B2FixtureDef();
         //     fixture_definition.shape = circle;
-        //     fixture_definition.userData = this;
-        //     fixture_definition.density = 10;
         //     var body = PhysicalWorld.gameWorld.createBody(body_definition);
         //     body.createFixture(fixture_definition);
         //     units.push(new Zombie(graphics, necromancer, body));
@@ -210,7 +206,7 @@ class Army implements Updateable implements MessageListener {
                 // Collect Corpses
                 collectCorpses();
                 // Continue
-            } if (route[0].enemies.length > 0) {
+            } else { // must be farm or castle
                 battle();
             }
         }

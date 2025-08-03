@@ -11,13 +11,14 @@ import utilities.MessageManager;
 class Castle extends Location {
  
     public function new(p: Object, pos: Vector2D, i: Int, n: Array<Int>, m: Map) {
-        super(p, i, n, m);
+        var highlight_bmp = new Bitmap(hxd.Res.img.locationblur.toTile().center(), highlight);
+        super(p, i, n, m, highlight_bmp);
         position = pos;
         graphics.x = pos.x;
         graphics.y = pos.y;
         new Bitmap(hxd.Res.img.castle.toTile().center(), graphics);
 
-        for (_ in 0...RNGManager.rand.random(10)+20) {
+        for (_ in 0...RNGManager.rand.random(10)+10) {
             spawnKnight();
         }
     }

@@ -37,8 +37,9 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
         location = l;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
-        new Bitmap(hxd.Res.img.peasant.toTile().center(), graphics);
-        hitpointIndicator = new Bitmap(hxd.Res.img.peasantmask.toTile().center(), graphics);
+        var bmp = new Bitmap(hxd.Res.img.peasant.toTile().center(), graphics);
+        bmp.scale(0.5);
+        hitpointIndicator = new Bitmap(hxd.Res.img.hostilemask.toTile().center(), bmp);
         hitpointIndicator.alpha = 0;
 
         corpseType = PeasantCorpse;
@@ -48,7 +49,7 @@ class Peasant extends Enemy implements MessageListener implements DestinationDir
         body_definition.position = l.position*PHYSICSCALEINVERT;
         body_definition.position += new Vector2D(RNGManager.rand.random(100)-50, RNGManager.rand.random(100)-50)*PHYSICSCALEINVERT;
         destination = body_definition.position;
-        var circle = new B2CircleShape(10*PHYSICSCALEINVERT);
+        var circle = new B2CircleShape(30*PHYSICSCALEINVERT);
         var fixture_definition = new B2FixtureDef();
         fixture_definition.shape = circle;
         fixture_definition.userData = this;

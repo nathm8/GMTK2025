@@ -23,6 +23,7 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
     var necromancerPositions = new Array<Vector2D>();
     var totalTime = 0.0;
     var timeExecuting = 0.0;
+    var offset: Vector2D;
 
     public function new(p: Object, n: Necromancer, b: B2Body, isPeasant=false) {
         super();
@@ -35,13 +36,16 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
         if  (!isPeasant) {
             var bmp = new Bitmap(hxd.Res.img.zombie.toTile().center(), graphics);
             bmp.scale(0.5);
-            hitpointIndicator = new Bitmap(hxd.Res.img.unitmask.toTile().center(), graphics);
+            hitpointIndicator = new Bitmap(hxd.Res.img.unitmask.toTile().center(), bmp);
         }
         else {
-            new Bitmap(hxd.Res.img.peasantzomb.toTile().center(), graphics);
-            hitpointIndicator = new Bitmap(hxd.Res.img.peasantmask.toTile().center(), graphics);
+            var bmp = new Bitmap(hxd.Res.img.peasantzomb.toTile().center(), graphics);
+            bmp.scale(0.5);
+            hitpointIndicator = new Bitmap(hxd.Res.img.hostilemask.toTile().center(), bmp);
         }
         hitpointIndicator.alpha = 0;
+
+        offset = new Vector2D(RNGManager.rand.rand()-0.5, RNGManager.rand.rand()-0.5)/8;
 
         body = b;
         body.getFixtureList().setDensity(0.5);
@@ -82,13 +86,9 @@ class Zombie extends Unit implements MessageListener implements DestinationDirec
                 totalTime = 0;
                 totalTime = -RNGManager.rand.rand()*0.05;
                 necromancerPositions.unshift(necromancer.body.getPosition());
-                var m = 1.0;
-                // if (Army.singleton.units.length > 20)
-                //     m += Math.pow(Army.singleton.units.length, 0.25);
+                var m = Math.pow(Army.singleton.units.length, 0.25);
                 var d = necromancerPositions.pop();
-                d.x += (RNGManager.rand.rand()-0.5)/4*m;
-                d.y += (RNGManager.rand.rand()-0.5)/4*m;
-                destination = d;
+                destination = d + offset*m;
             }
         } if (state == FetchingCorpse) {
             var cp: Vector2D = body.getPosition();

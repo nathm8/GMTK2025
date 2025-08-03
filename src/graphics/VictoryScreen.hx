@@ -58,8 +58,8 @@ class VictoryScreen extends Graphics implements MessageListener {
         var resurrections = Army.singleton.resurrections;
         var defeats = Army.singleton.defeats;
         var path = Army.singleton.longestPath;
-        var time = Army.singleton.totalTime;
-        forNowText.text = 'Time Taken: $time\nJournies Taken: $days\nLongest Path Travelled: $path\nDefeats: $defeats\nKills: $kills\nLosses: $losses\nResurrections: $resurrections';
+        var time = Math.round(Army.singleton.totalTime);
+        forNowText.text = 'Time Taken: $time s\nJournies Taken: $days\nLongest Path Travelled: $path\nDefeats: $defeats\nKills: $kills\nLosses: $losses\nResurrections: $resurrections';
     }
 
     public function receiveMessage(msg:Message):Bool {

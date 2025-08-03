@@ -11,11 +11,13 @@ import utilities.MessageManager;
 class Farm extends Location {
  
     public function new(p: Object, pos: Vector2D, i: Int, n: Array<Int>, m: Map) {
-        super(p, i, n, m);
+        var highlight_bmp = new Bitmap(hxd.Res.img.locationblur.toTile().center(), highlight);
+        super(p, i, n, m, highlight_bmp);
         position = pos;
         graphics.x = pos.x;
         graphics.y = pos.y;
-        new Bitmap(hxd.Res.img.farm.toTile().center(), graphics);
+        var bmp = new Bitmap(hxd.Res.img.farm.toTile().center(), graphics);
+        bmp.scale(0.5);
 
         for (_ in 0...RNGManager.rand.random(3)+1) {
             spawnPeasant();
