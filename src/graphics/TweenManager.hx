@@ -170,6 +170,29 @@ class MoveBounceTween extends Tween {
 	}
 }
 
+class LinearMoveTween extends Tween {
+	var drawable:Drawable;
+	var original:{x:Float, y:Float};
+	var target:{x:Float, y:Float};
+
+	public function new(d:Drawable, orig:{x:Float, y:Float},  targ: {x:Float, y:Float}, te:Float, tt:Float) {
+		super(te, tt);
+		drawable = d;
+		original = orig;
+		target = targ;
+	}
+
+	override function update(dt:Float) {
+		super.update(dt);
+		// negative te acts as a delay
+		if (timeElapsed < 0)
+			return;
+		var t = timeElapsed / timeTotal;
+		drawable.x = (1 - t) * original.x + t*target.x;
+		drawable.y = (1 - t) * original.y + t*target.y;
+	}
+}
+
 function easeInOutBack(x: Float): Float {
 	var c1 = 1.70158;
 	var c2 = c1 * 1.525;

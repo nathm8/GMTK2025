@@ -13,6 +13,7 @@ import utilities.RNGManager;
 class Main extends hxd.App implements MessageListener {
 
 	var gameScene: GameScene;
+	var menu: MainMenu;
 
 	static function main() {
 		new Main();
@@ -34,16 +35,20 @@ class Main extends hxd.App implements MessageListener {
 		var manager = hxd.snd.Manager.get();
 		manager.masterVolume = 0.15;
 		// newGame();
-		mainMenu();
+		menu = mainMenu();
 	}
 	
 	override function update(dt:Float) {
 		if (gameScene != null)
 			gameScene.update(dt);
+		if (menu != null)
+			menu.update(dt);
 	}
 
 	function mainMenu() {
-		setScene2D(new MainMenu(newGame));
+		var menu = new MainMenu(newGame);
+		setScene2D(menu);
+		return menu;
 	}
 	
 	function newGame() {
