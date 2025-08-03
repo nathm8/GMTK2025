@@ -32,6 +32,7 @@ class Corpse implements Updateable {
     var mask: Bitmap;
     public var joint: B2Joint;
     var resurrectionCount = 0;
+    var resurrecting = false;
     // var distanceJoint: B2DistanceJoint;
 
     public function new(p: Object, pos: Vector2D, t: CorpseType, b:B2Body, rez_count=0) {
@@ -65,12 +66,13 @@ class Corpse implements Updateable {
             var fixture_definition = new B2FixtureDef();
             fixture_definition.shape = circle;
             fixture_definition.userData = this;
-            fixture_definition.density = 1000;
+            fixture_definition.density = 50000;
             body = PhysicalWorld.gameWorld.createBody(body_definition);
             body.createFixture(fixture_definition);
         } else {
             body = b;
-            body.getFixtureList().setDensity(1000);
+            body.getFixtureList().setDensity(50000);
+            body.resetMassData();
             body.getFixtureList().setUserData(this);
             body.setLinearDamping(1.0);
         }
@@ -81,7 +83,7 @@ class Corpse implements Updateable {
     
     public function detach() {
         if (joint != null) {
-            body.getFixtureList().setDensity(1000);
+            body.resetMassData();
             PhysicalWorld.gameWorld.destroyJoint(joint);
         }
     }
@@ -89,6 +91,7 @@ class Corpse implements Updateable {
     public function attachToBody(b: B2Body) {
         detach();
         body.getFixtureList().setDensity(0.001);
+        body.resetMassData();
         var d: Vector2D = b.getPosition();
         d -= body.getPosition();
         var distance_joint_definition = new B2DistanceJointDef();
@@ -100,16 +103,20 @@ class Corpse implements Updateable {
     }
 
     public function update(dt:Float) {
+        var v: Vector2D = body.getPosition();
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
     }
 
     public function resurrect() {
+        detach();
+        resurrecting = true;
         TweenManager.singleton.add(new FadeOutTween(mask, 0, 2));
         TweenManager.singleton.add(new ScaleBounceTween(sprite, 0, 3));
         TweenManager.singleton.add(new RotateTween(sprite, Math.PI/2, 0, 0, 1));
         TweenManager.singleton.add(new DelayedCallTween(() -> MessageManager.sendMessage(new NewUnit(this)), -3, 0));
         TweenManager.singleton.add(new DelayedCallTween(destroy, -3, 0));
+        TweenManager.singleton.add(new DelayedCallTween(() -> resurrecting = false, -3, 0));
     }
 
     public function destroy() {

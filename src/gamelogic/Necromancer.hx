@@ -47,7 +47,7 @@ class Necromancer extends Unit implements MessageListener implements Destination
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
         mouse_joint_definition.target = destination;
-        mouse_joint_definition.maxForce = 50;
+        mouse_joint_definition.maxForce = 5000;
         mouse_joint_definition.dampingRatio = 0.9;
         mouse_joint_definition.frequencyHz = 0.9;
         
@@ -96,12 +96,12 @@ class Necromancer extends Unit implements MessageListener implements Destination
         if (state == FetchingCorpse) {
             var cp: Vector2D = body.getPosition();
             cp -= corpse.body.getPosition();
-            destination = corpse.body.getPosition() - cp.normalize()*0.5;
+            destination = corpse.body.getPosition() - cp.normalize()*0.1;
             timeFetching += dt;
             if (timeFetching > 1) {
                 corpse.attachToBody(body);
                 MessageManager.sendMessage(new CorpsePickup());
-                state = Moving;
+                state = Idle;
             }
         } else 
             timeFetching = 0;

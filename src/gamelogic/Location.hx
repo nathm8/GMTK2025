@@ -133,17 +133,17 @@ class Location implements Updateable implements MessageListener {
         }
         if (pos == null)
             pos = position + new Vector2D(RNGManager.rand.random(200)-100, RNGManager.rand.random(200)-100);
-        corpses.push(new Corpse(highlight.parent.parent, pos, t, b, rc));
+        corpses.insert(0, new Corpse(highlight.parent.parent, pos, t, b, rc));
     }
 
 	public function update(dt:Float) {
         for (c in corpses) {
             var p: Vector2D = c.body.getPosition();
             p *= PHYSICSCALE;
-            var delta = p - position;
+            var delta = position - p;
             // move corpses closer to location if they're far out            
             if (delta.magnitude > 110)
-                c.body.applyForce(dt*delta.normalize()*PHYSICSCALEINVERT, c.body.getPosition());
+                c.body.applyForce(10*dt*delta.normalize()*PHYSICSCALEINVERT, c.body.getPosition());
             c.update(dt);
         }
     }

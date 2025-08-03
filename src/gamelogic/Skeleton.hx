@@ -17,6 +17,7 @@ import utilities.MessageManager;
 class Skeleton extends Unit implements MessageListener implements DestinationDirectable {
  
     public var graphics: Graphics;
+    var hitpointIndicator: Bitmap;
     var mouseJoint: B2MouseJoint;
     var necromancer: Necromancer;
     var totalTime = 0.0;
@@ -31,17 +32,20 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         destination = new Vector2D();
         necromancer = n;
         new Bitmap(hxd.Res.img.skelly.toTile().center(), graphics);
+        hitpointIndicator = new Bitmap(hxd.Res.img.unitmask.toTile().center(), graphics);
+        hitpointIndicator.alpha = 0;
 
         body = b;
         body.getFixtureList().setDensity(0.75);
+        body.resetMassData();
         body.getFixtureList().setUserData(this);
-        body.setLinearDamping(0);
+        body.setLinearDamping(0.5);
 
         var mouse_joint_definition = new B2MouseJointDef();
         mouse_joint_definition.bodyA = new CircularPhysicalGameObject(new Vector2D(), PHYSICSCALEINVERT, 0).body;
         mouse_joint_definition.bodyB = body;
         mouse_joint_definition.collideConnected = false;
-        mouse_joint_definition.target = destination;
+        mouse_joint_definition.target = body.getPosition();
         mouse_joint_definition.maxForce = 10;
         mouse_joint_definition.dampingRatio = 0.75;
         mouse_joint_definition.frequencyHz = 0.75;
@@ -57,6 +61,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
         super.update(dt);
         graphics.x = body.getPosition().x*PHYSICSCALE;
         graphics.y = body.getPosition().y*PHYSICSCALE;
+        hitpointIndicator.alpha = 1 - (hitpoints / 2.0);
         if (state == Dead) return;
 
         if (state == Idle) {
@@ -87,6 +92,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
             if (timeExecuting > 5) {
                 trace("skele taking too long, magic attack");
                 target.hitpoints -= 0.01;
+                hitpoints -= 0.01;
             }
         } else 
             timeExecuting = 0;
