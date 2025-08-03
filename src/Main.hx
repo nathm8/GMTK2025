@@ -1,5 +1,6 @@
 package;
 
+import hxd.res.Sound;
 import graphics.ui.ManaOrb;
 import utilities.SoundManager;
 import gamelogic.GameScene;
@@ -27,6 +28,11 @@ class Main extends hxd.App implements MessageListener {
 		hxd.Window.getInstance().addEventTarget(onEvent);	
 		// gamelogic
 		SoundManager.initialise();
+		var sound: Sound;
+		sound = hxd.Res.snd.session2;
+		sound.play(true);
+		var manager = hxd.snd.Manager.get();
+		manager.masterVolume = 0.25;
 		newGame();
 		// mainMenu();
 	}

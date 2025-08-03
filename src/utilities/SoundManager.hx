@@ -13,7 +13,7 @@ class SoundManager implements MessageListener{
 
     static public function initialise() {
         if (soundManager == null) soundManager = new SoundManager();
-        manager = Manager.get();
+        // manager = Manager.get();
     }
 
     function new(){}

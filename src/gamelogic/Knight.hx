@@ -32,14 +32,14 @@ class Knight extends Enemy implements MessageListener implements DestinationDire
 
     public function new(p: Object, l: Location) {
         super();
-        hitpoints = 5;
+        hitpoints = 3;
         totalTime = RNGManager.rand.rand();
         location = l;
         MessageManager.addListener(this);
         graphics = new Graphics(p);
         var bmp = new Bitmap(hxd.Res.img.knight.toTile().center(), graphics);
         bmp.scale(0.5);
-        hitpointIndicator = new Bitmap(hxd.Res.img.knightmask.toTile().center(), graphics);
+        hitpointIndicator = new Bitmap(hxd.Res.img.hostilemask.toTile().center(), bmp);
         hitpointIndicator.alpha = 0;
 
         corpseType = PeasantCorpse;
