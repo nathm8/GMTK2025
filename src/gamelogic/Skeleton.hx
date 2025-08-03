@@ -95,6 +95,7 @@ class Skeleton extends Unit implements MessageListener implements DestinationDir
             destination = target.body.getPosition() - v.normalize()*0.1 + r;
             if (timeExecuting > 5) {
                 trace("skele taking too long, magic attack");
+                
                 target.hitpoints -= 0.05;
                 hitpoints -= 0.05;
             }
