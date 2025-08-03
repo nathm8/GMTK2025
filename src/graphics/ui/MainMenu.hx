@@ -72,8 +72,6 @@ class MainMenu extends Scene {
 		art.visible = true;
 		var end = dircs.pop();
 		art.x = 0; art.y = 0;
-		// art.x = WIDTH/2; art.y = HEIGHT/2;
-		trace(dircs, end);
 		TweenManager.singleton.add(new LinearMoveTween(art, {x:0, y:0}, end, 0, 8));
 		TweenManager.singleton.add(new FadeOutTween(art, -7, 1));
 		TweenManager.singleton.add(new DelayedCallTween(newArt, -9, 0));
