@@ -66,33 +66,49 @@ class Map implements Updateable implements MessageListener {
         var voronoi = new Voronoi();
         var diagram = voronoi.compute(points, Bounds.fromValues(-WIDTH/2,-HEIGHT/2,WIDTH,HEIGHT));
 
-        // for (tri in Delaunay.triangulate(points)) {
-        //     trace(tri);
-        //     var p = tri.p1 + tri.p2 + tri.p3;
-        //     var bmp: Bitmap = null;
-        //     var i = RNGManager.rand.random(6);
-        //     if (i == 0)
-        //         bmp = new Bitmap(hxd.Res.img.forest1.toTile().center(), graphics.parent);
-        //     if (i == 1)
-        //         bmp = new Bitmap(hxd.Res.img.forest2.toTile().center(), graphics.parent);
-        //     if (i == 2)
-        //         bmp = new Bitmap(hxd.Res.img.forest3.toTile().center(), graphics.parent);
-        //     if (i == 3)
-        //         bmp = new Bitmap(hxd.Res.img.forest4.toTile().center(), graphics.parent);
-        //     if (i == 4)
-        //         bmp = new Bitmap(hxd.Res.img.forest5.toTile().center(), graphics.parent);
-        //     if (i == 5)
-        //         bmp = new Bitmap(hxd.Res.img.forest6.toTile().center(), graphics.parent);
-        //     bmp.x = p.x;
-        //     bmp.y = p.y;
-        // }
+        for (tri in Delaunay.triangulate(points)) {
+            trace(tri);
+            var p:Vector2D = tri.p1 + tri.p2 + tri.p3;
+            p /= 3;
+            var bmp: Bitmap = null;
+            var i = RNGManager.rand.random(6);
+            if (i == 0)
+                bmp = new Bitmap(hxd.Res.img.forest1.toTile().center(), graphics);
+            if (i == 1)
+                bmp = new Bitmap(hxd.Res.img.forest2.toTile().center(), graphics);
+            if (i == 2)
+                bmp = new Bitmap(hxd.Res.img.forest3.toTile().center(), graphics);
+            if (i == 3)
+                bmp = new Bitmap(hxd.Res.img.forest4.toTile().center(), graphics);
+            if (i == 4)
+                bmp = new Bitmap(hxd.Res.img.forest5.toTile().center(), graphics);
+            if (i == 5)
+                bmp = new Bitmap(hxd.Res.img.forest6.toTile().center(), graphics);
+            bmp.scale(1.5);
+            bmp.x = p.x;
+            bmp.y = p.y;
+            if (RNGManager.rand.random(2) == 0)
+                bmp.scaleX = -1;
+        }
 
         for (cell in diagram.cells) {
             for (n in cell.getNeighbors()){
-                // graphics.lineStyle(10, 0xAAAAAA, 0.25);
-                // graphics.moveTo(cell.point.x, cell.point.y);
-                // graphics.lineTo(n.x, n.y);
+                var start = new Vector2D(cell.point.x, cell.point.y);
+                var end = new Vector2D(n.x, n.y);
+                var road = hxd.Res.img.road.toTile().center();
+                var rotation = (start - end).angle() - Math.PI/2;
+                var height = (start - end).magnitude;
+                var max = Math.floor(height/road.height);
+                for (y in 0...max) {
+                    var r: Float = y/max;
+                    var f = new Bitmap(road, graphics);
+                    f.rotation = rotation;
+                    f.x = start.x*(1-r) + end.x*r;
+                    f.y = start.y*(1-r) + end.y*r;
+                }
             }
+        }
+        for (cell in diagram.cells) {
             var p: Vector2D = cell.point;
             if (p == new Vector2D()) {
                 locations.push(new HQTower(graphics, cell.id, cell.getNeighborIndexes(), this));
