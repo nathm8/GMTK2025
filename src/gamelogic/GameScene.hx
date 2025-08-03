@@ -37,7 +37,6 @@ class GameScene extends Scene implements MessageListener {
 
 		MessageManager.addListener(this);
 
-		
 		updateables.push(new Map(this));
 		updateables.push(new Army(this));
 		var o = new ManaOrb();
